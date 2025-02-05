@@ -1,0 +1,133 @@
+apiVersion: 1
+
+groups:
+  - orgId: 1
+    name: "memory-alerts"
+    folder: "Alerts"
+    interval: 60s
+    rules:
+      - uid: alert_test
+        title: "Alert Test"
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            queryType: ""
+            model:
+              expr: 'rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]) > 2'
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Requisições API estão levando mais de 2 segundos em média"
+          description: "Tempo de resposta está alto"
+
+      - uid: high_cpu_usage
+        title: "High CPU Usage"
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            queryType: ""
+            model:
+              expr: 'rate(process_cpu_seconds_total[5m]) * 100 > 80'
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU usage detected"
+          description: "CPU usage above 80%"
+
+      - uid: high_memory_usage
+        title: "High Memory Usage"
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            queryType: ""
+            model:
+              expr: '(process_resident_memory_bytes / machine_memory_bytes) * 100 > 85'
+        noDataState: NoData
+        execErrState: Error
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High memory usage detected"
+          description: "Memory usage above 85%"
+
+      - uid: high_response_time
+        title: "High Response Time"
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            queryType: ""
+            model:
+              expr: 'rate(http_request_duration_seconds_sum[5m]) / rate(http_request_duration_seconds_count[5m]) > 2'
+        noDataState: NoData
+        execErrState: Error
+        for: 3m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High response time detected"
+          description: "API response time above 2 seconds"
+
+      - uid: high_error_rate
+        title: "High Error Rate"
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            queryType: ""
+            model:
+              expr: 'sum(rate(http_requests_total{status=~"5.."}[5m])) / sum(rate(http_requests_total[5m])) * 100 > 5'
+        noDataState: NoData
+        execErrState: Error
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High error rate detected"
+          description: "Error rate above 5%"
+
+      - uid: application_down
+        title: "Application Down"
+        condition: A
+        data:
+          - refId: A
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: PBFA97CFB590B2093
+            queryType: ""
+            model:
+              expr: 'up{job="influencer-dashboard"} == 0'
+        noDataState: NoData
+        execErrState: Error
+        for: 1m
+        labels:
+          severity: critical  # Este é mais crítico, então mudamos para critical
+        annotations:
+          summary: "Application is down"
+          description: "The application is not responding"

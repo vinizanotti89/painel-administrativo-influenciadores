@@ -1,0 +1,54 @@
+services:
+  node-app:
+    build:
+      context: ../
+      dockerfile: ./monitoring/Dockerfile
+    container_name: node-app
+    ports:
+      - "3001:3001"
+    networks:
+      - monitoring
+    restart: always
+
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - monitoring
+    depends_on:
+      - node-app
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=Bruna!989
+      - GF_ALERTING_ENABLED=true
+      - GF_UNIFIED_ALERTING_ENABLED=true
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=smtp.gmail.com:587
+      - GF_SMTP_USER=seu-email@gmail.com
+      - GF_SMTP_PASSWORD=sua-senha-de-app  # Use uma senha de aplicativo do Google
+      - GF_SMTP_FROM_ADDRESS=seu-email@gmail.com
+      - GF_SMTP_FROM_NAME=Grafana Alerts
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    networks:
+      - monitoring
+    depends_on:
+      - prometheus
+
+networks:
+  monitoring:
+    driver: bridge
+
+volumes:
+  grafana_data:
+    driver: local

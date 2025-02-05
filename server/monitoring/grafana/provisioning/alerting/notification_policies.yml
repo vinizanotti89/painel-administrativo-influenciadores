@@ -1,0 +1,36 @@
+apiVersion: 1
+
+contactPoints:
+  - orgId: 1
+    name: email-notifications
+    receivers:
+      - uid: email-primary
+        type: email
+        settings:
+          addresses: seu-email@gmail.com
+          
+  - orgId: 1
+    name: urgent-notifications
+    receivers:
+      - uid: email-urgent
+        type: email
+        settings:
+          addresses: seu-email-urgente@gmail.com
+
+policies:
+  - orgId: 1
+    receiver: email-notifications
+    group_by: ['alertname']
+    repeat_interval: 4h
+    routes:
+      - receiver: urgent-notifications
+        group_by: ['alertname']
+        matchers:
+          - severity = 'critical'
+        repeat_interval: 30m
+
+      - receiver: email-notifications
+        group_by: ['alertname']
+        matchers:
+          - severity = 'warning'
+        repeat_interval: 4h

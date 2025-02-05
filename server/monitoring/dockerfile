@@ -1,0 +1,18 @@
+FROM node:18
+
+WORKDIR /app
+
+# Copiar package.json
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Copiar código fonte
+COPY . .
+
+# Expor porta
+EXPOSE 3001
+
+# Iniciar aplicação
+CMD ["node", "src/app.js"]
