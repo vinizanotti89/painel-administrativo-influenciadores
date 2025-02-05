@@ -1,0 +1,72 @@
+@import '@/styles/themes.css';
+
+.header {
+  background-color: var(--background-primary);
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.button:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+/* Variants */
+.button-primary {
+  background-color: #3b82f6;
+  color: #fff;
+}
+
+.button-primary:hover {
+  background-color: #2563eb;
+}
+
+.button-secondary {
+  background-color: #e5e7eb;
+  color: #1f2937;
+}
+
+.button-secondary:hover {
+  background-color: #d1d5db;
+}
+
+.button-danger {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.button-danger:hover {
+  background-color: #dc2626;
+}
+
+/* Sizes */
+.button-small {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.75rem;
+}
+
+.button-medium {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+}
+
+.button-large {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+/* Button Group */
+.button-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
