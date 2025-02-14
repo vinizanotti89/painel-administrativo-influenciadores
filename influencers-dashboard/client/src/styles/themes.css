@@ -1,0 +1,75 @@
+:root {
+  /* Cores */
+  --primary-color: #3b82f6;
+  --text-primary: #1f2937;
+  --text-muted: #6b7280;
+  --card-background: #ffffff;
+  --badge-background: #f3f4f6;
+  --badge-text: #6b7280;
+  --error-background: #fee2e2;
+  --error-border: #ef4444;
+  --error-text: #b91c1c;
+  --border-color: #e5e7eb;
+
+  /* Espaçamento */
+  --spacing-1: 4px;
+  --spacing-2: 8px;
+  --spacing-3: 12px;
+  --spacing-4: 16px;
+  --spacing-6: 24px;
+
+  /* Tipografia */
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-xl: 20px;
+  --text-2xl: 24px;
+
+  /* Pesos da fonte */
+  --font-normal: 400;
+  --font-medium: 500;
+  --font-semibold: 600;
+  --font-bold: 700;
+
+  /* Border Radius */
+  --border-radius-sm: 4px;
+  --border-radius: 8px;
+
+  /* Sombras */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* Texto */
+  --text-primary: #111827;
+  --text-secondary: #6b7280;
+  --text-muted: #9ca3af;
+
+  /* Estados */
+  --success-bg: #dcfce7;
+  --success-text: #16a34a;
+  --warning-bg: #fef3c7;
+  --warning-text: #d97706;
+  --error-bg: #fee2e2;
+  --error-text: #dc2626;
+
+  /* Componentes */
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --border-radius: 8px;
+}
+
+/* Tema escuro (opcional) */
+[data-theme="dark"] {
+  --primary-color: #60a5fa;
+  --text-primary: #f3f4f6;
+  --text-muted: #9ca3af;
+  --card-background: #1f2937;
+  --badge-background: #374151;
+  --badge-text: #d1d5db;
+  --error-background: #7f1d1d;
+  --error-border: #991b1b;
+  --error-text: #fecaca;
+  --border-color: #374151;
+
+  /* Estados no tema escuro */
+  --success-bg: rgba(22, 163, 74, 0.2);
+  --warning-bg: rgba(217, 119, 6, 0.2);
+  --error-bg: rgba(220, 38, 38, 0.2);
+}

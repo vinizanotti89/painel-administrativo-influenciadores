@@ -1,0 +1,129 @@
+@import '@/styles/themes.css';
+
+.header {
+  background-color: var(--background-primary);
+}
+
+.dashboard-container {
+  padding: var(--spacing-6);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-6);
+  margin-bottom: var(--spacing-6);
+}
+
+@media (min-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.stat-card {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-2);
+}
+
+.stat-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.stat-title {
+  font-size: var(--text-sm);
+  color: var(--text-muted);
+}
+
+.stat-value {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.badge {
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--text-sm);
+  background-color: var(--badge-background);
+  color: var(--badge-text);
+}
+
+.table-card {
+  background: var(--card-background);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-4);
+  box-shadow: var(--shadow-sm);
+}
+
+.table-title {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  margin-bottom: var(--spacing-4);
+  color: var(--text-primary);
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  text-align: left;
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.data-table td {
+  padding: var(--spacing-3);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 2px solid transparent;
+  border-bottom-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.error-message {
+  padding: var(--spacing-4);
+  background-color: var(--error-background);
+  border: 1px solid var(--error-border);
+  color: var(--error-text);
+  border-radius: var(--border-radius);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

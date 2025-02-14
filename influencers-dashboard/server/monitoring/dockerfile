@@ -1,0 +1,22 @@
+FROM node:18
+
+WORKDIR /app
+
+# Copiar os arquivos de configuração primeiro
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Copiar o resto do código fonte
+COPY . .
+
+# Configurar variáveis de ambiente
+ENV NODE_ENV=development
+ENV NODE_PATH=/app/src
+
+# Expor porta
+EXPOSE 3001
+
+# Iniciar aplicação
+CMD ["node", "src/app.js"]

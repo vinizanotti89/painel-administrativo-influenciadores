@@ -1,0 +1,104 @@
+@import '@/styles/themes.css';
+
+.header {
+    background-color: var(--background-primary);
+}
+
+.recent-influencers-card {
+    background-color: var(--background-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+}
+
+.recent-influencers-title {
+    color: var(--text-primary);
+}
+
+.recent-influencers-header {
+    margin-bottom: 1.5rem;
+}
+
+.recent-influencers-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.influencers-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.influencers-table th,
+.influencers-table td {
+    color: var(--text-secondary);
+    background-color: var(--background-secondary);
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.influencers-table th {
+    font-weight: 500;
+    color: #6b7280;
+    background-color: #f9fafb;
+}
+
+.influencer-name {
+    font-weight: 500;
+    color: #111827;
+}
+
+.trust-score {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.trust-score.high {
+    background-color: #dcfce7;
+    color: #16a34a;
+}
+
+.trust-score.medium {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.trust-score.low {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.status-badge {
+    display: inline-flex;
+    padding: 0.25rem 0.5rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
+
+.view-details-button {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.875rem;
+    color: #4b5563;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.view-details-button:hover {
+    color: #111827;
+}

@@ -1,0 +1,36 @@
+.health-claims {
+  margin: 1.5rem;
+}
+
+.claims-header {
+  margin-bottom: 1.5rem;
+}
+
+.claims-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.claim-item {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.claim-content {
+  margin-top: 1rem;
+}
+
+.claim-source {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+.claim-studies {
+  margin-top: 1rem;
+}
+
+.claim-analysis {
+  margin-top: 1rem;
+}
