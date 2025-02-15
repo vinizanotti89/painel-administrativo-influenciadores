@@ -1,7 +1,6 @@
-// ThemeContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const ThemeContext = createContext();
+export const ThemeContext = createContext(); // Adicionando export aqui
 
 export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
