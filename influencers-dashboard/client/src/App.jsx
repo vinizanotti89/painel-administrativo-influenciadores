@@ -12,7 +12,7 @@ import HealthClaimForm from './pages/HealthClaimForm';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import SearchInfluencer from './pages/SearchInfluencer';
-import { ThemeProvider } from './contexts/ThemeContext';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import '@/styles/index.css';
 import '@/styles/themes.css';
 

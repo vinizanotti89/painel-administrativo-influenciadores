@@ -1,76 +1,96 @@
-import React, { createContext, useContext, useState, useCallback, useEffect } from 'react';
-import { api } from './mockApi.js';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const InfluencerContext = createContext();
 
-export const InfluencerProvider = ({ children }) => {
+export function InfluencerProvider({ children }) {
   const [influencers, setInfluencers] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [loading, setLoading] = useState(true); // Start with true
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     category: '',
-    platform: '',
+    platform: ''
   });
 
   const fetchInfluencers = useCallback(async () => {
     setLoading(true);
-    setError(null);
     try {
-      console.log('Fetching influencers...'); // Add more logging
-      const data = await api.getInfluencers();
-      console.log('Data received:', data);
-      
-      if (!data || data.length === 0) {
-        console.warn('No influencers found');
+      // Simulando uma chamada API
+      const response = await new Promise(resolve => 
+        setTimeout(() => resolve([
+          {
+            id: 1,
+            name: 'João Silva',
+            platform: 'Instagram',
+            followers: 50000,
+            trustScore: 85,
+            status: 'Ativo'
+          },
+          {
+            id: 2,
+            name: 'Maria Santos',
+            platform: 'YouTube',
+            followers: 75000,
+            trustScore: 92,
+            status: 'Ativo'
+          }
+        ]), 500)
+      );
+
+      let filteredInfluencers = response;
+
+      // Aplicar filtros
+      if (filters.search) {
+        const searchTerm = filters.search.toLowerCase();
+        filteredInfluencers = filteredInfluencers.filter(inf => 
+          inf.name.toLowerCase().includes(searchTerm)
+        );
       }
-      
-      setInfluencers(data || []);
-      setTotal(data ? data.length : 0);
+
+      if (filters.platform) {
+        filteredInfluencers = filteredInfluencers.filter(inf => 
+          inf.platform === filters.platform
+        );
+      }
+
+      if (filters.category) {
+        filteredInfluencers = filteredInfluencers.filter(inf => 
+          inf.categories?.includes(filters.category)
+        );
+      }
+
+      setInfluencers(filteredInfluencers);
+      setError(null);
     } catch (err) {
-      console.error('Error fetching influencers:', err);
-      setError(err.message || 'Failed to fetch influencers');
-      setInfluencers([]);
+      setError('Erro ao carregar influenciadores');
+      console.error(err);
     } finally {
       setLoading(false);
     }
+  }, [filters]);
+
+  const updateFilters = useCallback((newFilters) => {
+    setFilters(prev => ({ ...prev, ...newFilters }));
   }, []);
-
-  useEffect(() => {
-    fetchInfluencers();
-  }, []);
-
-  const updateFilters = (newFilters) => {
-    setFilters((prev) => ({
-      ...prev,
-      ...newFilters,
-    }));
-  };
-
-  const value = {
-    influencers,
-    total,
-    loading,
-    error,
-    filters,
-    updateFilters,
-    fetchInfluencers,
-  };
 
   return (
-    <InfluencerContext.Provider value={value}>
+    <InfluencerContext.Provider value={{
+      influencers,
+      loading,
+      error,
+      filters,
+      fetchInfluencers,
+      updateFilters
+    }}>
       {children}
     </InfluencerContext.Provider>
   );
-};
+}
 
 export const useInfluencer = () => {
   const context = useContext(InfluencerContext);
-  if (context === undefined) {
-    throw new Error('useInfluencer must be used within a InfluencerProvider');
+  if (!context) {
+    throw new Error('useInfluencer must be used within an InfluencerProvider');
   }
   return context;
 };
-
-

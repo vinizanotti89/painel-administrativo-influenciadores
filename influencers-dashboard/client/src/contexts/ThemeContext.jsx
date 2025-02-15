@@ -1,24 +1,21 @@
+// ThemeContext.jsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-export const ThemeContext = createContext();
+const ThemeContext = createContext();
 
-export const ThemeProvider = ({ children }) => {
+export function ThemeProvider({ children }) {
   const [theme, setTheme] = useState(() => {
-    // Verificar preferência salva ou preferência do sistema
-    const saved = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    return saved ? saved : prefersDark ? 'dark' : 'light';
+    const savedTheme = localStorage.getItem('theme');
+    return savedTheme || 'light';
   });
 
   useEffect(() => {
-    // Atualizar classe no documento
     document.documentElement.setAttribute('data-theme', theme);
-    // Salvar preferência
     localStorage.setItem('theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {
-    setTheme(current => current === 'light' ? 'dark' : 'light');
+    setTheme(prev => prev === 'light' ? 'dark' : 'light');
   };
 
   return (
@@ -26,20 +23,12 @@ export const ThemeProvider = ({ children }) => {
       {children}
     </ThemeContext.Provider>
   );
-};
+}
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
+  if (!context) {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
 };
-
-
-/* Funcionalidades:
-- Gerenciamento de tema claro/escuro
-- Persistência da preferência
-- Detecção de preferência do sistema
-- Hook personalizado para fácil acesso
-*/

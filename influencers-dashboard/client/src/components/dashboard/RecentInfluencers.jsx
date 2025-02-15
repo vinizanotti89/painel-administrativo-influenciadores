@@ -1,5 +1,7 @@
 import React from 'react';
-import { useInfluencer } from '../../contexts/InfluencerContext';
+import { Link } from 'react-router-dom';
+import { useInfluencer } from '@/contexts/InfluencerContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import Card from '@/components/ui/card';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
@@ -46,9 +48,7 @@ const RecentInfluencers = () => {
             {influencers.slice(0, 5).map((influencer) => (
               <TableRow key={influencer.id}>
                 <TableCell>
-                  <span className="influencer-name">
-                    {influencer.name}
-                  </span>
+                  <span className="influencer-name">{influencer.name}</span>
                 </TableCell>
                 <TableCell>{influencer.platform}</TableCell>
                 <TableCell>
@@ -60,20 +60,17 @@ const RecentInfluencers = () => {
                   </span>
                 </TableCell>
                 <TableCell>
-                  <Badge 
-                    variant="outline" 
-                    className="status-badge"
-                  >
+                  <Badge variant="outline" className="status-badge">
                     {influencer.status || 'Ativo'}
                   </Badge>
                 </TableCell>
                 <TableCell>
-                  <button 
+                  <Link 
+                    to={`/influencers/${influencer.id}`}
                     className="view-details-button"
-                    onClick={() => window.location.href = `/influencer/${influencer.id}`}
                   >
                     Ver Detalhes
-                  </button>
+                  </Link>
                 </TableCell>
               </TableRow>
             ))}

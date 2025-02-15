@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { useInfluencer } from '@/contexts/InfluencerContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import StatsCard from '@/components/dashboard/StatsCard';
 import RecentInfluencers from '@/components/dashboard/RecentInfluencers';
 import { Users, TrendingUp, BarChart2 } from 'lucide-react';
