@@ -26,6 +26,12 @@
   border-radius: var(--border-radius);
   padding: var(--spacing-4);
   box-shadow: var(--shadow-sm);
+  transition: all 0.2s ease-in-out;
+}
+
+[data-theme="dark"] .stat-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
 }
 
 .stat-content {
@@ -58,10 +64,19 @@
   color: var(--text-primary);
 }
 
+[data-theme="dark"] .stat-value {
+  color: var(--text-primary);
+}
+
 .badge {
   padding: var(--spacing-1) var(--spacing-2);
   border-radius: var(--border-radius-sm);
   font-size: var(--text-sm);
+  background-color: var(--badge-background);
+  color: var(--badge-text);
+}
+
+[data-theme="dark"] .badge {
   background-color: var(--badge-background);
   color: var(--badge-text);
 }
@@ -71,6 +86,11 @@
   border-radius: var(--border-radius);
   padding: var(--spacing-4);
   box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .table-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
 }
 
 .table-title {
@@ -96,6 +116,10 @@
   padding: var(--spacing-3);
   border-bottom: 1px solid var(--border-color);
   color: var(--text-primary);
+}
+
+[data-theme="dark"] .data-table td {
+  border-color: var(--border-color);
 }
 
 .loading-spinner {
