@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 
 export default defineConfig({
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
@@ -15,5 +16,12 @@ export default defineConfig({
       '@lib': path.resolve(__dirname, './src/lib')
     }
   },
-  plugins: [react()]
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: true,
+  },
+  server: {
+    port: 3000,
+  },
 })
