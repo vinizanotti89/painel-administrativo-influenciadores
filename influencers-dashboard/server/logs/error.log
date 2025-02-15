@@ -404,3 +404,16 @@
 2025-02-07 03:06:13:613 [31merror[39m: [31mErro no Redis: connect ECONNREFUSED 127.0.0.1:6379[39m
 2025-02-07 03:06:14:614 [31merror[39m: [31mErro no Redis: connect ECONNREFUSED 127.0.0.1:6379[39m
 2025-02-07 03:06:14:614 [31merror[39m: [31mFalha ao conectar ao Redis: Número máximo de tentativas de reconexão excedido[39m
+2025-02-15 00:01:20:120 [31merror[39m: [31mErro no Redis: Socket closed unexpectedly[39m
+2025-02-15 00:01:20:120 [31merror[39m: [31mErro no Redis: connect ECONNREFUSED 172.18.0.3:6379[39m
+2025-02-15 00:01:20:120 [31merror[39m: [31mErro no Redis: connect ECONNREFUSED 172.18.0.3:6379[39m
+2025-02-15 00:01:20:120 [31merror[39m: [31mErro no Redis: connect ECONNREFUSED 172.18.0.3:6379[39m
+2025-02-15 00:01:21:121 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:21:121 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:21:121 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:22:122 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:22:122 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:23:123 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:24:124 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:25:125 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
+2025-02-15 00:01:26:126 [31merror[39m: [31mErro no Redis: getaddrinfo ENOTFOUND redis[39m
