@@ -1,18 +1,5 @@
 {
-    "version": 2,
-    "builds": [
-      {
-        "src": "package.json",
-        "use": "@vercel/static-build",
-        "config": {
-          "zeroConfig": true
-        }
-      }
-    ],
-    "routes": [
-      {
-        "src": "/(.*)",
-        "dest": "/index.html"
-      }
-    ]
+    "framework": "vite",
+    "buildCommand": "cd client && npm run build",
+    "outputDirectory": "client/dist"
   }
