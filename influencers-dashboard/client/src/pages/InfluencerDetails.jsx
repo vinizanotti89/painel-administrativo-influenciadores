@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useInfluencer } from '@/contexts/InfluencerContext';
-import { useTheme } from '@/contexts/ThemeContext';
 import Card, { CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';

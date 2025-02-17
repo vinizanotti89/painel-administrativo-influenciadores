@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTheme } from '@/hooks/useTheme';
+import { useTheme } from '@/contexts/ThemeContext';
 import Card from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import Input from '@/components/ui/Input';
