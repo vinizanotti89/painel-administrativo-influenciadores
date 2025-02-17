@@ -35,38 +35,30 @@
 [data-theme="dark"] {
   /* Cores Base */
   --background-primary: #121212;
-  --background-secondary: #1e1e1e;
-  --card-background: #1e1e1e;
+  --background-secondary: #1a1a1a;
+  --card-background: #242424;
   
   /* Texto */
-  --text-primary: #f3f4f6;
-  --text-secondary: #d1d5db;
-  --text-muted: #9ca3af;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --text-muted: #6b7280;
   
   /* Componentes */
   --border-color: #2e2e2e;
-  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --card-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   
   /* Estados */
   --badge-background: #2e2e2e;
-  --badge-text: #d1d5db;
+  --badge-text: #e5e7eb;
   --success-bg: rgba(22, 163, 74, 0.2);
   --success-text: #4ade80;
   --warning-bg: rgba(217, 119, 6, 0.2);
   --warning-text: #fbbf24;
   --error-bg: rgba(220, 38, 38, 0.2);
   --error-text: #f87171;
-}
-
-/* Transições suaves */
-body {
-  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
-  background-color: var(--background-primary);
-  color: var(--text-primary);
-}
-
-* {
-  transition: background-color 0.2s ease-in-out, 
-              border-color 0.2s ease-in-out, 
-              color 0.2s ease-in-out;
+  
+  /* Cores Específicas */
+  --primary-color: #60a5fa;
+  --link-color: #60a5fa;
+  --hover-background: #2e2e2e;
 }
