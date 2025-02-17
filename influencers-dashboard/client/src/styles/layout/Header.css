@@ -1,8 +1,15 @@
 @import '@/styles/themes.css';
 
+
 .header {
-  background-color: var(--background-primary);
+  background-color: var(--card-background);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease-in-out;
+}
+
+[data-theme="dark"] .header {
+  background-color: var(--card-background);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .header-container {
@@ -21,25 +28,42 @@
 .header-title h1 {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #1a1a1a;
+  color: var(--text-primary);
 }
 
 .header-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 1rem;
+  position: absolute;
+  right: 50%;
+  transform: translateX(50%);
 }
 
 .theme-toggle-button {
-  background-color: var(--background-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   padding: 0.5rem 1rem;
   border-radius: var(--border-radius);
+  background-color: var(--card-background);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease-in-out;
 }
 
 .theme-toggle-button:hover {
-  background-color: var(--background-primary);
+  background-color: var(--badge-background);
+}
+
+[data-theme="dark"] .theme-toggle-button {
+  background-color: var(--card-background);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+}
+
+[data-theme="dark"] .theme-toggle-button:hover {
+  background-color: var(--badge-background);
 }
