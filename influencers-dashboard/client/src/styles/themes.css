@@ -1,5 +1,5 @@
 :root {
-  /* Mantendo as variáveis existentes */
+  /* Variáveis existentes */
   --background-primary: #ffffff;
   --background-secondary: #f9fafb;
   --card-background: #ffffff;
@@ -10,16 +10,32 @@
   --primary-color: #3b82f6;
   --hover-background: #f3f4f6;
 
-  /* Adicionando variáveis para componentes específicos */
+  /* Componentes específicos existentes */
   --input-background: #ffffff;
   --table-background: #ffffff;
   --stats-card-background: #ffffff;
   --badge-background: #f3f4f6;
   --button-secondary-background: #f3f4f6;
+
+  /* Novas variáveis para Research */
+  --research-card-background: #ffffff;
+  --research-input-background: #ffffff;
+  --research-border: #e5e7eb;
+  --research-hover: #f3f4f6;
+  --research-badge-text: #4b5563;
+  --research-badge-bg: #f3f4f6;
+  
+  /* Estados */
+  --success-bg: rgba(22, 163, 74, 0.1);
+  --success-text: #16a34a;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+  --warning-text: #d97706;
+  --error-bg: rgba(220, 38, 38, 0.1);
+  --error-text: #dc2626;
 }
 
 [data-theme="dark"] {
-  /* Mantendo as variáveis existentes */
+  /* Variáveis existentes no tema escuro */
   --background-primary: #111827;
   --background-secondary: #1f2937;
   --card-background: #1f2937;
@@ -30,18 +46,58 @@
   --primary-color: #60a5fa;
   --hover-background: #2d3748;
   
-  /* Adicionando variáveis específicas para o tema escuro */
+  /* Componentes específicos no tema escuro */
   --input-background: #1f2937;
   --table-background: #1f2937;
   --stats-card-background: #1f2937;
   --badge-background: #374151;
   --button-secondary-background: #1f2937;
 
-  /* Estados - mantendo os existentes */
+  /* Novas variáveis para Research no tema escuro */
+  --research-card-background: #1f2937;
+  --research-input-background: #374151;
+  --research-border: #374151;
+  --research-hover: #2d3748;
+  --research-badge-text: #e5e7eb;
+  --research-badge-bg: #374151;
+  
+  /* Estados no tema escuro */
   --success-bg: rgba(22, 163, 74, 0.2);
   --success-text: #4ade80;
   --warning-bg: rgba(217, 119, 6, 0.2);
   --warning-text: #fbbf24;
   --error-bg: rgba(220, 38, 38, 0.2);
   --error-text: #f87171;
+}
+
+/* Aplicação específica para elementos da pesquisa */
+.research-container {
+  background-color: var(--background-primary);
+  color: var(--text-primary);
+}
+
+.research-card {
+  background-color: var(--research-card-background);
+  border-color: var(--research-border);
+}
+
+.research-input {
+  background-color: var(--research-input-background);
+  color: var(--text-primary);
+  border-color: var(--research-border);
+}
+
+.research-badge {
+  background-color: var(--research-badge-bg);
+  color: var(--research-badge-text);
+}
+
+/* Transições suaves */
+.research-container *,
+.research-card,
+.research-input,
+.research-badge {
+  transition: background-color 0.2s ease-in-out, 
+              color 0.2s ease-in-out, 
+              border-color 0.2s ease-in-out;
 }
