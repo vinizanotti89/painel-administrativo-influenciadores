@@ -1,4 +1,5 @@
 :root {
+  /* Mantendo as variáveis existentes */
   --background-primary: #ffffff;
   --background-secondary: #f9fafb;
   --card-background: #ffffff;
@@ -8,9 +9,17 @@
   --border-color: #e5e7eb;
   --primary-color: #3b82f6;
   --hover-background: #f3f4f6;
+
+  /* Adicionando variáveis para componentes específicos */
+  --input-background: #ffffff;
+  --table-background: #ffffff;
+  --stats-card-background: #ffffff;
+  --badge-background: #f3f4f6;
+  --button-secondary-background: #f3f4f6;
 }
 
 [data-theme="dark"] {
+  /* Mantendo as variáveis existentes */
   --background-primary: #111827;
   --background-secondary: #1f2937;
   --card-background: #1f2937;
@@ -21,7 +30,14 @@
   --primary-color: #60a5fa;
   --hover-background: #2d3748;
   
-  /* Estados */
+  /* Adicionando variáveis específicas para o tema escuro */
+  --input-background: #1f2937;
+  --table-background: #1f2937;
+  --stats-card-background: #1f2937;
+  --badge-background: #374151;
+  --button-secondary-background: #1f2937;
+
+  /* Estados - mantendo os existentes */
   --success-bg: rgba(22, 163, 74, 0.2);
   --success-text: #4ade80;
   --warning-bg: rgba(217, 119, 6, 0.2);

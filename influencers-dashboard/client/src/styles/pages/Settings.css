@@ -1,34 +1,39 @@
 .settings-container {
   margin: 1.5rem;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
 }
 
 .settings-title {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #111827;
+  color: var(--text-primary);
   margin-bottom: 1.5rem;
 }
 
 .settings-card {
-  background-color: white;
+  background-color: var(--card-background);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
+  border: 1px solid var(--border-color);
 }
 
 .settings-card-header {
   padding: 1rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .settings-card-content {
   padding: 1rem;
+  color: var(--text-primary);
 }
 
 .theme-toggle {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  color: var(--text-primary);
 }
 
 .notification-settings {
@@ -40,4 +45,31 @@
 .export-options {
   display: flex;
   gap: 1rem;
+}
+
+/* Adicionando estilos específicos para inputs e botões nas configurações */
+.settings-container input {
+  background-color: var(--input-background);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+.settings-container .export-button {
+  background-color: var(--button-secondary-background);
+  border-color: var(--border-color);
+  color: var(--text-primary);
+}
+
+/* Estilos adicionais para elementos específicos no tema escuro */
+[data-theme='dark'] .settings-card {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme='dark'] .reports-table tr {
+  border-color: var(--border-color);
+}
+
+[data-theme='dark'] .analytics-grid .card {
+  background-color: var(--card-background);
+  border-color: var(--border-color);
 }

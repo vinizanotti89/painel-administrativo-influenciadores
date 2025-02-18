@@ -22,30 +22,6 @@ export const mockInfluencers = [
         url: "https://instagram.com/joaosilva"
       }
     ]
-  },
-  {
-    id: "inf_2",
-    name: "Maria Santos",
-    platform: "YouTube",
-    followers: 1000000,
-    trustScore: 92,
-    claims: [
-      {
-        id: "claim_2",
-        content: "Exercícios de alta intensidade melhoram a imunidade",
-        category: "medical",
-        status: "verified",
-        trustScore: 88
-      }
-    ],
-    socialMedia: [
-      {
-        id: "social_2",
-        platform: "YouTube",
-        username: "MariaSantosHealth",
-        url: "https://youtube.com/mariasantoshealth"
-      }
-    ]
   }
 ];
 
@@ -53,40 +29,47 @@ export const mockClaims = [
   {
     id: "claim_1",
     influencerId: "inf_1",
-    content: "Chá verde aumenta o metabolismo em 50%",
-    category: "nutrition",
-    status: "questionable",
-    trustScore: 65,
+    description: "Chá verde cura ansiedade",
+    type: "medicinal",
+    verificationStatus: "refuted",
+    date: "2024-01-15",
     originalSource: {
-      id: "source_1",
-      url: "https://instagram.com/p/123456",
-      postDate: "2024-12-15",
-      platform: "Instagram",
+      url: "https://instagram.com/post/123",
+      postDate: "2024-01-15",
       engagement: {
         likes: 15000,
         comments: 1200,
-        shares: 500
+        shares: 800
       }
     },
     studies: [
       {
-        id: "study_1",
-        title: "Effects of Green Tea on Metabolism",
-        authors: "Smith, J., Johnson, M.",
+        id: 1,
+        title: "Effects of Green Tea on Anxiety: A Systematic Review",
+        authors: "Smith, J. et al",
         year: 2023,
-        journal: "Journal of Nutrition",
-        doi: "10.1234/jn.2023.1234",
+        journal: "Journal of Clinical Psychology",
+        doi: "10.1234/jcp.2023.001",
+        conclusion: "refutes",
+        summary: "Não foram encontradas evidências conclusivas de que o chá verde tem efeito significativo sobre a ansiedade."
+      },
+      {
+        id: 2,
+        title: "Green Tea Compounds and Mental Health",
+        authors: "Johnson, M. et al",
+        year: 2022,
+        journal: "Nutrition Research",
+        doi: "10.1234/nr.2022.002",
         conclusion: "inconclusive",
-        summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
+        summary: "Resultados mistos sobre os efeitos do chá verde na saúde mental, necessitando mais estudos."
       }
     ],
-    verificationNotes: "Alegação exagerada dos benefícios reais",
+    verificationNotes: "Múltiplos estudos científicos não encontraram evidências que suportem esta alegação. A afirmação é considerada enganosa e pode criar falsas expectativas.",
     expertOpinions: [
       {
-        id: "expert_1",
-        name: "Dr. Ana Paula Silva",
-        credentials: "PhD em Nutrição",
-        opinion: "O chá verde tem benefícios metabólicos comprovados, mas o aumento de 50% é inexato."
+        expert: "Dra. Maria Santos",
+        credential: "PhD em Psiquiatria",
+        opinion: "Não há evidências científicas que suportem o uso de chá verde como tratamento para ansiedade. Pessoas com ansiedade devem buscar ajuda profissional."
       }
     ]
   }
@@ -95,24 +78,7 @@ export const mockClaims = [
 export const api = {
   getInfluencers: async () => {
     return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve([
-          {
-            id: "inf_1",
-            name: "João Silva",
-            platform: "Instagram",
-            followers: 50000,
-            trustScore: 85
-          },
-          {
-            id: "inf_2",
-            name: "Maria Santos",
-            platform: "YouTube",
-            followers: 75000,
-            trustScore: 92
-          }
-        ]);
-      }, 500);
+      setTimeout(() => resolve(mockInfluencers), 500);
     });
   },
 

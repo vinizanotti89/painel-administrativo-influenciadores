@@ -5,81 +5,54 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FileText, Link as LinkIcon, BookOpen, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
+import { api } from '@/api/mockApi';
 import '@/styles/pages/ClaimDetails.css';
-
 
 const ClaimDetails = () => {
   const { id } = useParams();
   const [claim, setClaim] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulated API call - Replace with actual API
     const fetchClaimDetails = async () => {
-      setLoading(true);
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      try {
+        setLoading(true);
+        const claimData = await api.getClaimById(id);
 
-      // Mock data
-      setClaim({
-        id: parseInt(id),
-        influencer: {
-          name: "João Silva",
-          platform: "Instagram",
-          followers: "500K"
-        },
-        description: "Chá verde cura ansiedade",
-        type: "medicinal",
-        verificationStatus: "refuted",
-        date: "2024-01-15",
-        originalSource: {
-          url: "https://instagram.com/post/123",
-          postDate: "2024-01-15",
-          engagement: {
-            likes: 15000,
-            comments: 1200,
-            shares: 800
+        if (!claimData) {
+          setError('Alegação não encontrada');
+          return;
+        }
+
+        const influencerData = await api.getInfluencerById(claimData.influencerId);
+
+        setClaim({
+          ...claimData,
+          influencer: {
+            name: influencerData?.name || 'Nome não encontrado',
+            platform: influencerData?.platform || 'Plataforma não encontrada',
+            followers: influencerData?.followers || 0
           }
-        },
-        studies: [
-          {
-            id: 1,
-            title: "Effects of Green Tea on Anxiety: A Systematic Review",
-            authors: "Smith, J. et al",
-            year: 2023,
-            journal: "Journal of Clinical Psychology",
-            doi: "10.1234/jcp.2023.001",
-            conclusion: "refutes",
-            summary: "Não foram encontradas evidências conclusivas de que o chá verde tem efeito significativo sobre a ansiedade."
-          },
-          {
-            id: 2,
-            title: "Green Tea Compounds and Mental Health",
-            authors: "Johnson, M. et al",
-            year: 2022,
-            journal: "Nutrition Research",
-            doi: "10.1234/nr.2022.002",
-            conclusion: "inconclusive",
-            summary: "Resultados mistos sobre os efeitos do chá verde na saúde mental, necessitando mais estudos."
-          }
-        ],
-        verificationNotes: "Múltiplos estudos científicos não encontraram evidências que suportem esta alegação. A afirmação é considerada enganosa e pode criar falsas expectativas.",
-        expertOpinions: [
-          {
-            expert: "Dra. Maria Santos",
-            credential: "PhD em Psiquiatria",
-            opinion: "Não há evidências científicas que suportem o uso de chá verde como tratamento para ansiedade. Pessoas com ansiedade devem buscar ajuda profissional."
-          }
-        ]
-      });
-      setLoading(false);
+        });
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    fetchClaimDetails();
+    if (id) {
+      fetchClaimDetails();
+    }
   }, [id]);
 
   if (loading) {
     return <div className="loading-state">Carregando...</div>;
+  }
+
+  if (error) {
+    return <div className="error-state">Erro: {error}</div>;
   }
 
   if (!claim) {
@@ -134,14 +107,14 @@ const ClaimDetails = () => {
     <div className="claim-details">
       <div className="claim-header">
         <h1 className="page-title">Detalhes da Alegação</h1>
-        <Badge className={`status-badge ${claim.verificationStatus}`}>
+        <Badge className={`status-badge ${claim.status}`}>
           <div className="status-content">
-            {getStatusIcon(claim.verificationStatus)}
-            <span>{getStatusText(claim.verificationStatus)}</span>
+            {getStatusIcon(claim.status)}
+            <span>{getStatusText(claim.status)}</span>
           </div>
         </Badge>
       </div>
-      
+
       <Card className="info-card">
         <CardHeader>
           <CardTitle>Informações Básicas</CardTitle>
@@ -152,14 +125,14 @@ const ClaimDetails = () => {
               <h3 className="section-title">Influenciador</h3>
               <p className="influencer-name">{claim.influencer.name}</p>
               <p className="platform-info">
-                {claim.influencer.platform} • {claim.influencer.followers} seguidores
+                {claim.influencer.platform} • {claim.influencer.followers.toLocaleString()} seguidores
               </p>
             </div>
             <div className="info-section">
               <h3 className="section-title">Alegação</h3>
-              <p className="claim-description">{claim.description}</p>
+              <p className="claim-description">{claim.content}</p>
               <p className="claim-metadata">
-                Tipo: {claim.type} • Data: {new Date(claim.date).toLocaleDateString('pt-BR')}
+                Tipo: {claim.category} • Data: {new Date(claim.originalSource.postDate).toLocaleDateString('pt-BR')}
               </p>
             </div>
           </div>
@@ -197,10 +170,10 @@ const ClaimDetails = () => {
                   <TableRow>
                     <TableCell className="label-cell">URL</TableCell>
                     <TableCell>
-                      <a href={claim.originalSource.url} 
-                         target="_blank" 
-                         rel="noopener noreferrer"
-                         className="source-link">
+                      <a href={claim.originalSource.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="source-link">
                         {claim.originalSource.url}
                         <LinkIcon className="link-icon" />
                       </a>
@@ -246,9 +219,9 @@ const ClaimDetails = () => {
                     </p>
                     <p className="study-summary">{study.summary}</p>
                     <a href={`https://doi.org/${study.doi}`}
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       className="study-link">
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="study-link">
                       DOI: {study.doi}
                       <LinkIcon className="link-icon" />
                     </a>
@@ -282,8 +255,8 @@ const ClaimDetails = () => {
                 {claim.expertOpinions.map((expert, index) => (
                   <div key={index} className="expert-item">
                     <div className="expert-header">
-                      <h3 className="expert-name">{expert.expert}</h3>
-                      <p className="expert-credentials">{expert.credential}</p>
+                      <h3 className="expert-name">{expert.name || expert.expert}</h3>
+                      <p className="expert-credentials">{expert.credentials || expert.credential}</p>
                     </div>
                     <p className="expert-opinion">{expert.opinion}</p>
                   </div>
@@ -296,6 +269,5 @@ const ClaimDetails = () => {
     </div>
   );
 };
-
 
 export default ClaimDetails;

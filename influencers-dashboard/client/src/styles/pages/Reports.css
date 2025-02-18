@@ -1,5 +1,7 @@
 .reports-container {
   padding: 1.5rem;
+  background-color: var(--background-primary);
+  color: var(--text-primary);
 }
 
 .reports-header {
@@ -12,6 +14,7 @@
 .reports-title {
   font-size: 1.875rem;
   font-weight: bold;
+  color: var(--text-primary);
 }
 
 .reports-actions {
@@ -27,9 +30,10 @@
 }
 
 .report-card {
-  background-color: white;
+  background-color: var(--card-background);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--border-color);
 }
 
 .recent-reports {
@@ -40,4 +44,6 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
+  background-color: var(--table-background);
+  color: var(--text-primary);
 }
