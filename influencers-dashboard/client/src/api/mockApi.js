@@ -5,6 +5,7 @@ export const mockInfluencers = [
     platform: "Instagram",
     followers: 500000,
     trustScore: 85,
+    categories: ["Saúde", "Nutrição"], // Adicionado
     claims: [
       {
         id: "claim_1",
@@ -21,7 +22,17 @@ export const mockInfluencers = [
         username: "@joaosilva",
         url: "https://instagram.com/joaosilva"
       }
-    ]
+    ],
+    // Adicionado
+    statistics: {
+      totalClaims: 15,
+      verifiedClaims: 10,
+      refutedClaims: 3,
+      pendingClaims: 2
+    },
+    // Adicionado
+    pontuacao: 85,
+    jaPostouFakeNews: false
   }
 ];
 
@@ -71,43 +82,64 @@ export const mockClaims = [
         credential: "PhD em Psiquiatria",
         opinion: "Não há evidências científicas que suportem o uso de chá verde como tratamento para ansiedade. Pessoas com ansiedade devem buscar ajuda profissional."
       }
-    ]
+    ],
+    // Adicionados campos necessários para os componentes
+    content: "Chá verde cura ansiedade",
+    category: "medical",
+    status: "refuted",
+    trustScore: 65,
+    verificationDate: "2024-01-15",
+    references: ["10.1234/jcp.2023.001", "10.1234/nr.2022.002"]
   }
 ];
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
 export const api = {
   getInfluencers: async () => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(mockInfluencers), 500);
-    });
+    await delay(500);
+    return mockInfluencers;
   },
 
   getInfluencerById: async (id) => {
-    return new Promise((resolve) => {
-      const influencer = mockInfluencers.find(inf => inf.id === id);
-      setTimeout(() => resolve(influencer), 300);
-    });
+    await delay(300);
+    return mockInfluencers.find(inf => inf.id === id);
   },
 
   getClaims: async () => {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(mockClaims), 400);
-    });
+    await delay(400);
+    return mockClaims;
   },
 
   getClaimById: async (id) => {
-    return new Promise((resolve) => {
-      const claim = mockClaims.find(c => c.id === id);
-      setTimeout(() => resolve(claim), 200);
-    });
+    await delay(200);
+    return mockClaims.find(c => c.id === id);
   },
 
-  searchInfluencers: async (query) => {
-    return new Promise((resolve) => {
-      const filtered = mockInfluencers.filter(inf =>
+  searchInfluencers: async (query = '', filters = {}) => {
+    await delay(300);
+    let filtered = [...mockInfluencers];
+    
+    if (query) {
+      filtered = filtered.filter(inf =>
         inf.name.toLowerCase().includes(query.toLowerCase())
       );
-      setTimeout(() => resolve(filtered), 300);
-    });
+    }
+
+    if (filters.category) {
+      filtered = filtered.filter(inf =>
+        inf.categories.includes(filters.category)
+      );
+    }
+
+    if (filters.platform) {
+      filtered = filtered.filter(inf =>
+        inf.platform === filters.platform
+      );
+    }
+
+    return filtered;
   }
 };
+
+export default api;
