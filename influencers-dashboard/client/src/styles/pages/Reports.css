@@ -47,3 +47,35 @@
   background-color: var(--table-background);
   color: var(--text-primary);
 }
+
+[data-theme='dark'] .reports-container {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .report-card {
+  background-color: #2d3748;
+  border-color: #4a5568;
+}
+
+[data-theme='dark'] .reports-table {
+  background-color: #2d3748;
+}
+
+[data-theme='dark'] .table-header {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+[data-theme='dark'] .table-row {
+  border-color: #4a5568;
+}
+
+[data-theme='dark'] .table-row:hover {
+  background-color: #2d3748;
+}
+
+[data-theme='dark'] .badge {
+  background-color: #4a5568;
+  color: #ffffff;
+}
