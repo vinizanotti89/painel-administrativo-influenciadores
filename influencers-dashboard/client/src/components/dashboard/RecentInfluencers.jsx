@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useInfluencer } from '@/contexts/InfluencerContext';
 import { useTheme } from '@/contexts/ThemeContext';
-import Card from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import '@/styles/components/dashboard/recent-influencers.css';

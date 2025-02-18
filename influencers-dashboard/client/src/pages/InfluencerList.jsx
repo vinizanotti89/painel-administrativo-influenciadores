@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useInfluencer } from '@/contexts/InfluencerContext';
-import Card, { CardContent } from "@/components/ui/card";  // Modificado aqui
+import { Card, CardContent } from "@/components/ui/card";  // Modificado aqui
 import { Button } from '@/components/ui/button';
 import SearchBar from '@/components/ui/SearchBar';
 import InfluencerTable from '@/components/influencer/InfluencerTable';

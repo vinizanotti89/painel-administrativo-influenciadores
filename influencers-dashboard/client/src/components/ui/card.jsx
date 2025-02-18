@@ -39,6 +39,5 @@ CardContent.displayName = "CardContent"
 CardTitle.displayName = "CardTitle"
 
 // Export default e nomeados juntos
-const exportObject = { CardHeader, CardContent, CardTitle };
-export { CardHeader, CardContent, CardTitle };
-export default Card;
+export { Card, CardHeader, CardContent, CardTitle };
+

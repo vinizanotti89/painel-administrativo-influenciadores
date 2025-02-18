@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useInfluencer } from '@/contexts/InfluencerContext';
-import Card from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import '@/styles/pages/HealthClaims.css';
 

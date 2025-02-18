@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useInfluencer } from '@/contexts/InfluencerContext';
-import Card, { CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button, ButtonGroup } from '@/components/ui/button';
 import Input from '@/components/ui/Input';
