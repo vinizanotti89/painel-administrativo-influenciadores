@@ -50,7 +50,7 @@
   text-decoration: none;
 }
 
-[data-theme="dark"] .view-details {
+[data-theme="dark"] .view-details, h2 {
   color: #60a5fa;
 }
 
