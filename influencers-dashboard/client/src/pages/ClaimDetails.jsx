@@ -1,72 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useParams } from 'react-router-dom';
+import Card, { CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, BookOpen, CheckCircle, XCircle, AlertCircle, ExternalLink } from 'lucide-react';
+import api from '@/mockApi';
+import '@/styles/pages/ClaimDetails.css';
 
 const ClaimDetails = () => {
-  // Since we don't have react-router-dom, we'll get the ID from a prop or context
+  const { id } = useParams();
   const [claim, setClaim] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchClaimDetails = async () => {
+    const fetchClaim = async () => {
       try {
-        // Mocking API call with sample data for demonstration
-        const mockClaim = {
-          id: "claim_1",
-          content: "Chá verde aumenta o metabolismo em 50%",
-          status: "questionable",
-          category: "nutrition",
-          trustScore: 65,
-          influencer: {
-            name: "Dr. João Silva",
-            platform: "Instagram",
-            followers: 500000
-          },
-          originalSource: {
-            url: "https://instagram.com/p/123456",
-            postDate: "2024-12-15",
-            engagement: {
-              likes: 15000,
-              comments: 1200,
-              shares: 500
-            }
-          },
-          studies: [
-            {
-              id: "study_1",
-              title: "Effects of Green Tea on Metabolism",
-              authors: "Smith, J., Johnson, M.",
-              year: 2023,
-              journal: "Journal of Nutrition",
-              doi: "10.1234/jn.2023.1234",
-              conclusion: "inconclusive",
-              summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
-            }
-          ],
-          verificationNotes: "Alegação exagerada dos benefícios reais",
-          expertOpinions: [
-            {
-              id: "expert_1",
-              name: "Dr. Ana Paula Silva",
-              credentials: "PhD em Nutrição",
-              opinion: "O chá verde tem benefícios metabólicos comprovados, mas o aumento de 50% é inexato."
-            }
-          ]
-        };
-
-        setClaim(mockClaim);
-        setLoading(false);
+        setLoading(true);
+        const data = await api.getClaimById(id); 
+        if (!data) {
+          throw new Error('Alegação não encontrada');
+        }
+        setClaim(data);
       } catch (err) {
         setError(err.message);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchClaimDetails();
-  }, []);
+    if (id) {
+      fetchClaim();
+    }
+  }, [id]);
 
   if (loading) {
     return (
@@ -78,19 +44,13 @@ const ClaimDetails = () => {
 
   if (error) {
     return (
-      <div className="p-4 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-100 rounded">
-        Erro: {error}
+      <div className="p-4 bg-red-100 text-red-700 rounded-md">
+        {error}
       </div>
     );
   }
 
-  if (!claim) {
-    return (
-      <div className="p-4 bg-yellow-100 dark:bg-yellow-900 text-yellow-700 dark:text-yellow-100 rounded">
-        Alegação não encontrada
-      </div>
-    );
-  }
+  if (!claim) return null;
 
   return (
     <div className="space-y-6 p-6">
@@ -98,6 +58,9 @@ const ClaimDetails = () => {
         <h1 className="text-2xl font-bold">Detalhes da Alegação</h1>
         <Badge variant={claim.status === 'verified' ? 'success' : 
                        claim.status === 'refuted' ? 'destructive' : 'warning'}>
+          {claim.status === 'verified' && <CheckCircle className="w-4 h-4 mr-2" />}
+          {claim.status === 'refuted' && <XCircle className="w-4 h-4 mr-2" />}
+          {claim.status === 'questionable' && <AlertCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'verified' ? 'Verificado' :
            claim.status === 'refuted' ? 'Refutado' : 'Em Análise'}
         </Badge>
@@ -110,29 +73,33 @@ const ClaimDetails = () => {
         <CardContent className="space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <h3 className="font-semibold mb-2">Influenciador</h3>
-              <p>{claim.influencer.name}</p>
-              <p className="text-sm text-muted-foreground">
-                {claim.influencer.platform} • {claim.influencer.followers.toLocaleString()} seguidores
-              </p>
-            </div>
-            <div>
               <h3 className="font-semibold mb-2">Alegação</h3>
               <p>{claim.content}</p>
               <p className="text-sm text-muted-foreground">
-                {claim.category} • {new Date(claim.originalSource.postDate).toLocaleDateString('pt-BR')}
+                {claim.category} • {new Date(claim.date).toLocaleDateString('pt-BR')}
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold mb-2">Fonte Original</h3>
+              <a 
+                href={claim.originalSource.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline flex items-center gap-2"
+              >
+                {claim.originalSource.url}
+                <ExternalLink className="w-4 h-4" />
+              </a>
+              <p className="text-sm text-muted-foreground">
+                Publicado em: {new Date(claim.originalSource.postDate).toLocaleDateString('pt-BR')}
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      <Tabs defaultValue="source" className="w-full">
+      <Tabs defaultValue="studies" className="w-full">
         <TabsList>
-          <TabsTrigger value="source">
-            <ExternalLink className="w-4 h-4 mr-2" />
-            Fonte
-          </TabsTrigger>
           <TabsTrigger value="studies">
             <BookOpen className="w-4 h-4 mr-2" />
             Estudos
@@ -147,41 +114,6 @@ const ClaimDetails = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="source">
-          <Card>
-            <CardContent className="pt-6">
-              <div className="divide-y">
-                <div className="py-3 grid grid-cols-3">
-                  <div className="font-medium">URL</div>
-                  <div className="col-span-2">
-                    <a href={claim.originalSource.url} 
-                       target="_blank" 
-                       rel="noopener noreferrer"
-                       className="text-primary hover:underline inline-flex items-center">
-                      {claim.originalSource.url}
-                      <ExternalLink className="w-4 h-4 ml-2" />
-                    </a>
-                  </div>
-                </div>
-                <div className="py-3 grid grid-cols-3">
-                  <div className="font-medium">Data</div>
-                  <div className="col-span-2">
-                    {new Date(claim.originalSource.postDate).toLocaleDateString('pt-BR')}
-                  </div>
-                </div>
-                <div className="py-3 grid grid-cols-3">
-                  <div className="font-medium">Engajamento</div>
-                  <div className="col-span-2 flex gap-4">
-                    <span>{claim.originalSource.engagement.likes.toLocaleString()} likes</span>
-                    <span>{claim.originalSource.engagement.comments.toLocaleString()} comentários</span>
-                    <span>{claim.originalSource.engagement.shares.toLocaleString()} compartilhamentos</span>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
         <TabsContent value="studies">
           <Card>
             <CardContent className="pt-6">
@@ -192,12 +124,14 @@ const ClaimDetails = () => {
                     {study.authors} • {study.journal} • {study.year}
                   </p>
                   <p className="mb-2">{study.summary}</p>
-                  <a href={`https://doi.org/${study.doi}`}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="text-primary hover:underline inline-flex items-center">
+                  <a
+                    href={`https://doi.org/${study.doi}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline flex items-center gap-2"
+                  >
                     DOI: {study.doi}
-                    <ExternalLink className="w-4 h-4 ml-2" />
+                    <ExternalLink className="w-4 h-4" />
                   </a>
                 </div>
               ))}
@@ -216,10 +150,10 @@ const ClaimDetails = () => {
         <TabsContent value="experts">
           <Card>
             <CardContent className="pt-6">
-              {claim.expertOpinions.map((expert) => (
-                <div key={expert.id} className="mb-6 last:mb-0">
-                  <h3 className="font-semibold">{expert.name}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">{expert.credentials}</p>
+              {claim.expertOpinions.map((expert, index) => (
+                <div key={index} className="mb-6 last:mb-0">
+                  <h3 className="font-semibold">{expert.expert}</h3>
+                  <p className="text-sm text-muted-foreground mb-2">{expert.credential}</p>
                   <p>{expert.opinion}</p>
                 </div>
               ))}
