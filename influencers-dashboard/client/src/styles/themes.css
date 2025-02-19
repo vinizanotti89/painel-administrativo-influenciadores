@@ -24,7 +24,7 @@
   --research-hover: #f3f4f6;
   --research-badge-text: #4b5563;
   --research-badge-bg: #f3f4f6;
-  
+
   /* Estados */
   --success-bg: rgba(22, 163, 74, 0.1);
   --success-text: #16a34a;
@@ -32,6 +32,20 @@
   --warning-text: #d97706;
   --error-bg: rgba(220, 38, 38, 0.1);
   --error-text: #dc2626;
+
+  /* Estados - light theme */
+  --success-bg: rgba(22, 163, 74, 0.1);
+  --success-text: #16a34a;
+  --warning-bg: rgba(217, 119, 6, 0.1);
+  --warning-text: #d97706;
+  --error-bg: rgba(220, 38, 38, 0.1);
+  --error-text: #dc2626;
+
+  /* Estilos para Claims */
+  --claim-card-bg: var(--card-background);
+  --claim-header-bg: var(--background-secondary);
+  --claim-border: var(--border-color);
+  --claim-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 [data-theme="dark"] {
@@ -39,13 +53,13 @@
   --background-primary: #111827;
   --background-secondary: #1f2937;
   --card-background: #1f2937;
-  --text-primary: #ffffff;
+  --text-primary: #60a5fa;
   --text-secondary: #e5e7eb;
   --text-muted: #9ca3af;
-  --border-color: #374151;
+  --border-color: #ffffff;
   --primary-color: #60a5fa;
   --hover-background: #2d3748;
-  
+
   /* Componentes específicos no tema escuro */
   --input-background: #1f2937;
   --table-background: #1f2937;
@@ -60,7 +74,7 @@
   --research-hover: #2d3748;
   --research-badge-text: #e5e7eb;
   --research-badge-bg: #374151;
-  
+
   /* Estados no tema escuro */
   --success-bg: rgba(22, 163, 74, 0.2);
   --success-text: #4ade80;
@@ -68,6 +82,12 @@
   --warning-text: #fbbf24;
   --error-bg: rgba(220, 38, 38, 0.2);
   --error-text: #f87171;
+
+  /* Estilos para Claims */
+  --claim-card-bg: var(--card-background);
+  --claim-header-bg: var(--background-secondary);
+  --claim-border: var(--border-color);
+  --claim-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 /* Aplicação específica para elementos da pesquisa */
@@ -97,7 +117,8 @@
 .research-card,
 .research-input,
 .research-badge {
-  transition: background-color 0.2s ease-in-out, 
-              color 0.2s ease-in-out, 
-              border-color 0.2s ease-in-out;
+  transition: background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out;
 }
+

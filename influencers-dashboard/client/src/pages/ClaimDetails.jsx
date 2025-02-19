@@ -7,60 +7,109 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, BookOpen, CheckCircle, XCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import '@/styles/pages/ClaimDetails.css';
 
+const mockClaim = {
+  id: "claim_1",
+  content: "Chá verde aumenta o metabolismo em 50%",
+  status: "questionable",
+  category: "nutrition",
+  date: "2024-02-15",
+  trustScore: 65,
+  originalSource: {
+    url: "https://instagram.com/p/123456",
+    postDate: "2024-02-15",
+    engagement: {
+      likes: 15000,
+      comments: 1200,
+      shares: 500
+    }
+  },
+  studies: [
+    {
+      id: "study_1",
+      title: "Effects of Green Tea on Metabolism",
+      authors: "Smith, J., Johnson, M.",
+      year: 2023,
+      journal: "Journal of Nutrition",
+      doi: "10.1234/jn.2023.1234",
+      conclusion: "inconclusive",
+      summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
+    }
+  ],
+  verificationNotes: "Alegação exagerada dos benefícios reais",
+  expertOpinions: [
+    {
+      id: "expert_1",
+      expert: "Dra. Ana Paula Silva",
+      credential: "PhD em Nutrição",
+      opinion: "O chá verde tem benefícios metabólicos comprovados, mas o aumento de 50% é inexato."
+    }
+  ]
+};
+
 const ClaimDetails = () => {
   const { id } = useParams();
   const [claim, setClaim] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
+  seEffect(() => {
     const fetchClaim = async () => {
       try {
-        console.log('Fetching claim with id:', id); // Debug log
         setLoading(true);
-        const data = await api.getClaimById(id);
-        console.log('Fetched data:', data); // Debug log
+        // Simulando delay de rede
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
-        if (!data) {
-          throw new Error('Alegação não encontrada');
-        }
-        setClaim(data);
+        // Em produção, aqui você faria a chamada real à API
+        setClaim(mockClaim);
+        setError(null);
       } catch (err) {
-        console.error('Error fetching claim:', err); // Debug log
-        setError(err.message);
+        setError('Erro ao carregar os dados da alegação');
+        console.error('Error fetching claim:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
+    if (claimId) {
       fetchClaim();
     }
-  }, [id]);
+  }, [claimId]);
 
   console.log('Current state:', { loading, error, claim });
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-        <span className="ml-2">Carregando alegação...</span>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-8 h-8 border-4 border-t-blue-500 border-b-blue-500 rounded-full animate-spin"></div>
+          <p className="text-gray-600">Carregando detalhes da alegação...</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-4 bg-red-100 text-red-700 rounded-md">
-        Erro ao carregar alegação: {error}
+      <div className="p-6 max-w-2xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 text-red-700">
+            <AlertCircle className="w-5 h-5" />
+            <p className="font-medium">{error}</p>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (!claim) {
     return (
-      <div className="p-4 bg-yellow-100 text-yellow-700 rounded-md">
-        Nenhuma alegação encontrada com o ID: {id}
+      <div className="p-6 max-w-2xl mx-auto">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-center gap-2 text-yellow-700">
+            <AlertCircle className="w-5 h-5" />
+            <p className="font-medium">Alegação não encontrada</p>
+          </div>
+        </div>
       </div>
     );
   }
