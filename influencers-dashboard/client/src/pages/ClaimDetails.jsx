@@ -16,13 +16,17 @@ const ClaimDetails = () => {
   useEffect(() => {
     const fetchClaim = async () => {
       try {
+        console.log('Fetching claim with id:', id); // Debug log
         setLoading(true);
         const data = await api.getClaimById(id);
+        console.log('Fetched data:', data); // Debug log
+
         if (!data) {
           throw new Error('Alegação não encontrada');
         }
         setClaim(data);
       } catch (err) {
+        console.error('Error fetching claim:', err); // Debug log
         setError(err.message);
       } finally {
         setLoading(false);
@@ -34,10 +38,13 @@ const ClaimDetails = () => {
     }
   }, [id]);
 
+  console.log('Current state:', { loading, error, claim });
+
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span className="ml-2">Carregando alegação...</span>
       </div>
     );
   }
@@ -45,12 +52,18 @@ const ClaimDetails = () => {
   if (error) {
     return (
       <div className="p-4 bg-red-100 text-red-700 rounded-md">
-        {error}
+        Erro ao carregar alegação: {error}
       </div>
     );
   }
 
-  if (!claim) return null;
+  if (!claim) {
+    return (
+      <div className="p-4 bg-yellow-100 text-yellow-700 rounded-md">
+        Nenhuma alegação encontrada com o ID: {id}
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 p-6">

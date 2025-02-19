@@ -47,3 +47,45 @@
 .claim-tabs {
   margin-top: 1.5rem;
 }
+
+.claim-card {
+  background-color: var(--claim-card-bg);
+  border: 1px solid var(--claim-border);
+  box-shadow: var(--claim-shadow);
+}
+
+.claim-header {
+  background-color: var(--claim-header-bg);
+}
+
+.status-badge.verified {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+}
+
+.status-badge.refuted {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+}
+
+.status-badge.questionable {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.loading-spinner {
+  border-color: var(--border-color);
+  border-top-color: var(--primary-color);
+}
+
+.error-message {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-text);
+}
+
+.empty-state {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+  border: 1px solid var(--warning-text);
+}
