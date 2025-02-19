@@ -52,7 +52,7 @@ const ClaimDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  seEffect(() => {
+  useEffect(() => {
     const fetchClaim = async () => {
       try {
         setLoading(true);
@@ -70,12 +70,10 @@ const ClaimDetails = () => {
       }
     };
 
-    if (claimId) {
+    if (id) {
       fetchClaim();
     }
-  }, [claimId]);
-
-  console.log('Current state:', { loading, error, claim });
+  }, [id]);
 
   if (loading) {
     return (
@@ -115,11 +113,15 @@ const ClaimDetails = () => {
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-6 max-w-4xl mx-auto space-y-6">
       <div className="flex justify-between items-start">
         <h1 className="text-2xl font-bold">Detalhes da Alegação</h1>
-        <Badge variant={claim.status === 'verified' ? 'success' :
-          claim.status === 'refuted' ? 'destructive' : 'warning'}>
+        <Badge
+          variant={
+            claim.status === 'verified' ? 'success' :
+              claim.status === 'refuted' ? 'destructive' : 'warning'
+          }
+        >
           {claim.status === 'verified' && <CheckCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'refuted' && <XCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'questionable' && <AlertCircle className="w-4 h-4 mr-2" />}
@@ -155,6 +157,11 @@ const ClaimDetails = () => {
               <p className="text-sm text-muted-foreground">
                 Publicado em: {new Date(claim.originalSource.postDate).toLocaleDateString('pt-BR')}
               </p>
+              <div className="mt-2 flex gap-4">
+                <span>🤍 {claim.originalSource.engagement.likes}</span>
+                <span>💬 {claim.originalSource.engagement.comments}</span>
+                <span>🔁 {claim.originalSource.engagement.shares}</span>
+              </div>
             </div>
           </div>
         </CardContent>
@@ -186,6 +193,7 @@ const ClaimDetails = () => {
                     {study.authors} • {study.journal} • {study.year}
                   </p>
                   <p className="mb-2">{study.summary}</p>
+
                   <a
                     href={`https://doi.org/${study.doi}`}
                     target="_blank"
@@ -200,30 +208,8 @@ const ClaimDetails = () => {
             </CardContent>
           </Card>
         </TabsContent>
-
-        <TabsContent value="verification">
-          <Card>
-            <CardContent className="pt-6">
-              <p>{claim.verificationNotes}</p>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="experts">
-          <Card>
-            <CardContent className="pt-6">
-              {claim.expertOpinions.map((expert, index) => (
-                <div key={index} className="mb-6 last:mb-0">
-                  <h3 className="font-semibold">{expert.expert}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">{expert.credential}</p>
-                  <p>{expert.opinion}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
       </Tabs>
-    </div>
+    </div >
   );
 };
 
