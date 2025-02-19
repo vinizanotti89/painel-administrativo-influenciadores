@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Card, { CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import api from '@/api/mockApi';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, BookOpen, CheckCircle, XCircle, AlertCircle, ExternalLink } from 'lucide-react';
-import api from '@/mockApi';
 import '@/styles/pages/ClaimDetails.css';
 
 const ClaimDetails = () => {
@@ -17,7 +17,7 @@ const ClaimDetails = () => {
     const fetchClaim = async () => {
       try {
         setLoading(true);
-        const data = await api.getClaimById(id); 
+        const data = await api.getClaimById(id);
         if (!data) {
           throw new Error('Alegação não encontrada');
         }
@@ -56,13 +56,13 @@ const ClaimDetails = () => {
     <div className="space-y-6 p-6">
       <div className="flex justify-between items-start">
         <h1 className="text-2xl font-bold">Detalhes da Alegação</h1>
-        <Badge variant={claim.status === 'verified' ? 'success' : 
-                       claim.status === 'refuted' ? 'destructive' : 'warning'}>
+        <Badge variant={claim.status === 'verified' ? 'success' :
+          claim.status === 'refuted' ? 'destructive' : 'warning'}>
           {claim.status === 'verified' && <CheckCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'refuted' && <XCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'questionable' && <AlertCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'verified' ? 'Verificado' :
-           claim.status === 'refuted' ? 'Refutado' : 'Em Análise'}
+            claim.status === 'refuted' ? 'Refutado' : 'Em Análise'}
         </Badge>
       </div>
 
@@ -81,7 +81,7 @@ const ClaimDetails = () => {
             </div>
             <div>
               <h3 className="font-semibold mb-2">Fonte Original</h3>
-              <a 
+              <a
                 href={claim.originalSource.url}
                 target="_blank"
                 rel="noopener noreferrer"
