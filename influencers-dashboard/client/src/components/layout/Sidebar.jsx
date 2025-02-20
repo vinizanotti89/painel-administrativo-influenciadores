@@ -10,7 +10,8 @@ const Sidebar = () => {
     { name: 'Analytics', path: '/analytics' },
     { name: 'Relatórios', path: '/reports' },
     { name: 'Configurações', path: '/settings' },
-    { name: 'Pesquisa', path: '/research'}
+    { name: 'Pesquisa', path: '/research'},
+    { name: 'Trust Leaderboard', path: '/leaderboard'},
   ];
 
   return (

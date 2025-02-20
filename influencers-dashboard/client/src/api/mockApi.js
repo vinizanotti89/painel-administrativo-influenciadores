@@ -1,39 +1,20 @@
 export const mockInfluencers = [
   {
     id: "inf_1",
-    name: "João Silva",
+    name: "Dr. João Silva",
+    photo: "/placeholder.jpg", // Adicionar depois
+    category: "Medicina",
     platform: "Instagram",
-    followers: 500000,
+    followers: 1200000,
     trustScore: 85,
-    categories: ["Saúde", "Nutrição"], // Adicionado
-    claims: [
-      {
-        id: "claim_1",
-        content: "Chá verde aumenta o metabolismo em 50%",
-        category: "nutrition",
-        status: "questionable",
-        trustScore: 65
-      }
-    ],
-    socialMedia: [
-      {
-        id: "social_1",
-        platform: "Instagram",
-        username: "@joaosilva",
-        url: "https://instagram.com/joaosilva"
-      }
-    ],
-    // Adicionado
+    trend: "up",
     statistics: {
-      totalClaims: 15,
-      verifiedClaims: 10,
-      refutedClaims: 3,
-      pendingClaims: 2
-    },
-    // Adicionado
-    pontuacao: 85,
-    jaPostouFakeNews: false
-  }
+      totalClaims: 150,
+      verifiedClaims: 127,
+      refutedClaims: 15,
+      pendingClaims: 8
+    }
+  },
 ];
 
 export const mockClaims = [

@@ -46,6 +46,14 @@
   --claim-header-bg: var(--background-secondary);
   --claim-border: var(--border-color);
   --claim-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+
+  /* Novas variáveis para o leaderboard */
+  --success-bg: rgba(22, 163, 74, 0.1);
+  --success-text: #16a34a;
+  --warning-bg: rgba(234, 179, 8, 0.1);
+  --warning-text: #eab308;
+  --error-bg: rgba(239, 68, 68, 0.1);
+  --error-text: #ef4444;
 }
 
 [data-theme="dark"] {
@@ -121,4 +129,3 @@
     color 0.2s ease-in-out,
     border-color 0.2s ease-in-out;
 }
-

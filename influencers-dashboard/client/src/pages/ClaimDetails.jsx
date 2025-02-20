@@ -17,33 +17,18 @@ const mockClaim = {
   originalSource: {
     url: "https://instagram.com/p/123456",
     postDate: "2024-02-15",
-    engagement: {
-      likes: 15000,
-      comments: 1200,
-      shares: 500
-    }
+    engagement: { likes: 15000, comments: 1200, shares: 500 }
   },
-  studies: [
-    {
-      id: "study_1",
-      title: "Effects of Green Tea on Metabolism",
-      authors: "Smith, J., Johnson, M.",
-      year: 2023,
-      journal: "Journal of Nutrition",
-      doi: "10.1234/jn.2023.1234",
-      conclusion: "inconclusive",
-      summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
-    }
-  ],
-  verificationNotes: "Alegação exagerada dos benefícios reais",
-  expertOpinions: [
-    {
-      id: "expert_1",
-      expert: "Dra. Ana Paula Silva",
-      credential: "PhD em Nutrição",
-      opinion: "O chá verde tem benefícios metabólicos comprovados, mas o aumento de 50% é inexato."
-    }
-  ]
+  studies: [{
+    id: "study_1",
+    title: "Effects of Green Tea on Metabolism",
+    authors: "Smith, J., Johnson, M.",
+    year: 2023,
+    journal: "Journal of Nutrition",
+    doi: "10.1234/jn.2023.1234",
+    conclusion: "inconclusive",
+    summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
+  }]
 };
 
 const ClaimDetails = () => {
@@ -56,23 +41,16 @@ const ClaimDetails = () => {
     const fetchClaim = async () => {
       try {
         setLoading(true);
-        // Simulando delay de rede
         await new Promise(resolve => setTimeout(resolve, 1000));
-
-        // Em produção, aqui você faria a chamada real à API
-        setClaim(mockClaim);
-        setError(null);
+        setClaim(mockClaim); 
       } catch (err) {
-        setError('Erro ao carregar os dados da alegação');
-        console.error('Error fetching claim:', err);
+        setError(err.message);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchClaim();
-    }
+    fetchClaim();
   }, [id]);
 
   if (loading) {

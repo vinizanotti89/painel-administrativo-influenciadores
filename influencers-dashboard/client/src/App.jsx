@@ -14,6 +14,7 @@ import Settings from './pages/Settings';
 import SearchInfluencer from './pages/SearchInfluencer';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import ResearchConfig from './pages/ResearchConfig';
+import TrustLeaderboard from './pages/TrustLeaderboard';
 import '@/styles/index.css';
 import '@/styles/themes.css';
 
@@ -35,6 +36,7 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/search" element={<SearchInfluencer />} />
               <Route path="/research" element={<ResearchConfig />} />
+              <Route path="/leaderboard" element={<TrustLeaderboard />} />
             </Routes>
           </Layout>
         </InfluencerProvider>
