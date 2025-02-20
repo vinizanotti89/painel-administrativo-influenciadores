@@ -12,8 +12,8 @@ import HealthClaimForm from './pages/HealthClaimForm';
 import Reports from './pages/Reports';
 import Settings from './pages/Settings';
 import SearchInfluencer from './pages/SearchInfluencer';
+import SearchPage from './pages/SearchPage';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
-import ResearchConfig from './pages/ResearchConfig';
 import TrustLeaderboard from './pages/TrustLeaderboard';
 import '@/styles/index.css';
 import '@/styles/themes.css';
@@ -35,7 +35,7 @@ function App() {
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/search" element={<SearchInfluencer />} />
-              <Route path="/research" element={<ResearchConfig />} />
+              <Route path="/search"element={<SearchPage />} />
               <Route path="/leaderboard" element={<TrustLeaderboard />} />
             </Routes>
           </Layout>

@@ -1,65 +1,65 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import api from '@/api/mockApi';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { FileText, BookOpen, CheckCircle, XCircle, AlertCircle, ExternalLink } from 'lucide-react';
 import '@/styles/pages/ClaimDetails.css';
 
-const mockClaim = {
-  id: "claim_1",
-  content: "Chá verde aumenta o metabolismo em 50%",
-  status: "questionable",
-  category: "nutrition",
-  date: "2024-02-15",
-  trustScore: 65,
-  originalSource: {
-    url: "https://instagram.com/p/123456",
-    postDate: "2024-02-15",
-    engagement: { likes: 15000, comments: 1200, shares: 500 }
-  },
-  studies: [{
-    id: "study_1",
-    title: "Effects of Green Tea on Metabolism",
-    authors: "Smith, J., Johnson, M.",
-    year: 2023,
-    journal: "Journal of Nutrition",
-    doi: "10.1234/jn.2023.1234",
-    conclusion: "inconclusive",
-    summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
-  }]
-};
-
 const ClaimDetails = () => {
-  const { id } = useParams();
   const [claim, setClaim] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchClaim = async () => {
-      try {
-        setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setClaim(mockClaim); 
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+    const mockData = {
+      id: "claim_1",
+      content: "Chá verde aumenta o metabolismo em 50%",
+      status: "questionable",
+      category: "nutrition",
+      date: "2024-02-15",
+      trustScore: 65,
+      originalSource: {
+        url: "https://example.com/post/123",
+        postDate: "2024-02-15",
+        engagement: {
+          likes: 15000,
+          comments: 1200,
+          shares: 500
+        }
+      },
+      studies: [
+        {
+          id: "study_1",
+          title: "Effects of Green Tea on Metabolism",
+          authors: "Smith, J., Johnson, M.",
+          year: 2023,
+          journal: "Journal of Nutrition",
+          doi: "10.1234/jn.2023.1234",
+          conclusion: "inconclusive",
+          summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
+        }
+      ],
+      expertOpinions: [
+        {
+          id: "expert_1", 
+          expert: "Dra. Ana Silva",
+          credential: "PhD em Nutrição",
+          opinion: "O chá verde tem benefícios metabólicos comprovados, mas o aumento de 50% é inexato."
+        }
+      ]
     };
 
-    fetchClaim();
-  }, [id]);
+    // Simular carregamento
+    setTimeout(() => {
+      setClaim(mockData);
+      setLoading(false);
+    }, 1000);
+  }, []);
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-8 h-8 border-4 border-t-blue-500 border-b-blue-500 rounded-full animate-spin"></div>
-          <p className="text-gray-600">Carregando detalhes da alegação...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="w-8 h-8 border-4 border-t-blue-500 border-b-blue-500 rounded-full animate-spin" />
       </div>
     );
   }
@@ -97,14 +97,14 @@ const ClaimDetails = () => {
         <Badge
           variant={
             claim.status === 'verified' ? 'success' :
-              claim.status === 'refuted' ? 'destructive' : 'warning'
+            claim.status === 'refuted' ? 'destructive' : 'warning'
           }
         >
           {claim.status === 'verified' && <CheckCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'refuted' && <XCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'questionable' && <AlertCircle className="w-4 h-4 mr-2" />}
           {claim.status === 'verified' ? 'Verificado' :
-            claim.status === 'refuted' ? 'Refutado' : 'Em Análise'}
+           claim.status === 'refuted' ? 'Refutado' : 'Em Análise'}
         </Badge>
       </div>
 
@@ -123,22 +123,14 @@ const ClaimDetails = () => {
             </div>
             <div>
               <h3 className="font-semibold mb-2">Fonte Original</h3>
-              <a
-                href={claim.originalSource.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline flex items-center gap-2"
-              >
-                {claim.originalSource.url}
-                <ExternalLink className="w-4 h-4" />
-              </a>
+              <p className="text-blue-600">{claim.originalSource.url}</p>
               <p className="text-sm text-muted-foreground">
                 Publicado em: {new Date(claim.originalSource.postDate).toLocaleDateString('pt-BR')}
               </p>
               <div className="mt-2 flex gap-4">
-                <span>🤍 {claim.originalSource.engagement.likes}</span>
+                <span>❤️ {claim.originalSource.engagement.likes}</span>
                 <span>💬 {claim.originalSource.engagement.comments}</span>
-                <span>🔁 {claim.originalSource.engagement.shares}</span>
+                <span>🔄 {claim.originalSource.engagement.shares}</span>
               </div>
             </div>
           </div>
@@ -150,10 +142,6 @@ const ClaimDetails = () => {
           <TabsTrigger value="studies">
             <BookOpen className="w-4 h-4 mr-2" />
             Estudos
-          </TabsTrigger>
-          <TabsTrigger value="verification">
-            <CheckCircle className="w-4 h-4 mr-2" />
-            Verificação
           </TabsTrigger>
           <TabsTrigger value="experts">
             <FileText className="w-4 h-4 mr-2" />
@@ -171,23 +159,30 @@ const ClaimDetails = () => {
                     {study.authors} • {study.journal} • {study.year}
                   </p>
                   <p className="mb-2">{study.summary}</p>
+                  <p className="text-blue-600">DOI: {study.doi}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        </TabsContent>
 
-                  <a
-                    href={`https://doi.org/${study.doi}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline flex items-center gap-2"
-                  >
-                    DOI: {study.doi}
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+        <TabsContent value="experts">
+          <Card>
+            <CardContent className="pt-6">
+              {claim.expertOpinions.map((expert) => (
+                <div key={expert.id} className="mb-6 last:mb-0">
+                  <h3 className="text-lg font-semibold mb-2">{expert.expert}</h3>
+                  <p className="text-sm text-muted-foreground mb-2">
+                    {expert.credential}
+                  </p>
+                  <p>{expert.opinion}</p>
                 </div>
               ))}
             </CardContent>
           </Card>
         </TabsContent>
       </Tabs>
-    </div >
+    </div>
   );
 };
 

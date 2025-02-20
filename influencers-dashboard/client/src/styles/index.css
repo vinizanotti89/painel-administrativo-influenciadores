@@ -1,4 +1,18 @@
 @import '@/styles/themes.css';
+@import './components/dashboard/stats-card.css';
+@import './components/dashboard/recent-influencers.css';
+@import './components/ui/Accordion.css';
+@import './components/ui/Alert.css';
+@import './components/ui/Badge.css';
+@import './components/ui/Button.css';
+@import './components/ui/Card.css';
+@import './components/ui/Input.css';
+@import './components/ui/Label.css';
+@import './components/ui/SearchBar.css';
+@import './components/ui/Select.css';
+@import './components/ui/Table.css';
+@import './components/ui/Tabs.css';
+@import './components/ui/Textarea.css';
 @import './layout/Header.css';
 @import './layout/Layout.css';
 @import './layout/MainContent.css';
@@ -12,21 +26,11 @@
 @import './pages/InfluencerList.css';
 @import './pages/Reports.css';
 @import './pages/SearchInfluencer.css';
+@import './pages/SearchPage.css';
 @import './pages/Settings.css';
-@import './components/ui/Accordion.css';
-@import './components/ui/Alert.css';
-@import './components/ui/Badge.css';
-@import './components/ui/Button.css';
-@import './components/ui/Card.css';
-@import './components/ui/Input.css';
-@import './components/ui/Label.css';
-@import './components/ui/SearchBar.css';
-@import './components/ui/Select.css';
-@import './components/ui/Table.css';
-@import './components/ui/Tabs.css';
-@import './components/ui/Textarea.css';
-@import './components/dashboard/stats-card.css';
-@import './components/dashboard/recent-influencers.css';
+@import './pages/TrustLeaderboard.css';
+
+
 
 /* Reset and Base Styles */
 * {
