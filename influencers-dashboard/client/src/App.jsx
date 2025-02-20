@@ -27,15 +27,15 @@ function App() {
             <Routes>
               <Route path="/" element={<Dashboard />} />
               <Route path="/influencers" element={<InfluencerList />} />
-              <Route path="/analytics" element={<Analytics />} />
               <Route path="/influencers/:id" element={<InfluencerDetails />} />
-              <Route path="/claims" element={<HealthClaims />} />
-              <Route path="/claims/:id" element={<ClaimDetails />} />
+              <Route path="/analytics" element={<Analytics />} />
               <Route path="/claims/new" element={<HealthClaimForm />} />
+              <Route path="/claims/:id" element={<ClaimDetails />} />
+              <Route path="/claims" element={<HealthClaims />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/search" element={<SearchInfluencer />} />
-              <Route path="/search"element={<SearchPage />} />
+              <Route path="/search/influencer" element={<SearchInfluencer />} />
+              <Route path="/search" element={<SearchPage />} />
               <Route path="/leaderboard" element={<TrustLeaderboard />} />
             </Routes>
           </Layout>

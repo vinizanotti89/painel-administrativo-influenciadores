@@ -1,187 +1,170 @@
 import React, { useState, useEffect } from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { FileText, BookOpen, CheckCircle, XCircle, AlertCircle, ExternalLink } from 'lucide-react';
+import { CheckCircle, XCircle, AlertTriangle } from 'lucide-react';
+import api from '@/api/mockApi';
 import '@/styles/pages/ClaimDetails.css';
 
-const ClaimDetails = () => {
-  const [claim, setClaim] = useState(null);
+const ClaimDetails = ({ id }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [claim, setClaim] = useState(null);
 
   useEffect(() => {
-    const mockData = {
-      id: "claim_1",
-      content: "Chá verde aumenta o metabolismo em 50%",
-      status: "questionable",
-      category: "nutrition",
-      date: "2024-02-15",
-      trustScore: 65,
-      originalSource: {
-        url: "https://example.com/post/123",
-        postDate: "2024-02-15",
-        engagement: {
-          likes: 15000,
-          comments: 1200,
-          shares: 500
+    let isMounted = true;
+
+    const loadClaimData = async () => {
+      try {
+        const claimData = await api.getClaimById(id);
+        if (isMounted) {
+          if (claimData) {
+            setClaim(claimData);
+          } else {
+            setError('Claim não encontrado');
+          }
         }
-      },
-      studies: [
-        {
-          id: "study_1",
-          title: "Effects of Green Tea on Metabolism",
-          authors: "Smith, J., Johnson, M.",
-          year: 2023,
-          journal: "Journal of Nutrition",
-          doi: "10.1234/jn.2023.1234",
-          conclusion: "inconclusive",
-          summary: "Estudos mostram aumento moderado no metabolismo, mas não na magnitude alegada."
+      } catch (err) {
+        if (isMounted) {
+          setError('Erro ao carregar os detalhes do claim');
+          console.error('Erro:', err);
         }
-      ],
-      expertOpinions: [
-        {
-          id: "expert_1", 
-          expert: "Dra. Ana Silva",
-          credential: "PhD em Nutrição",
-          opinion: "O chá verde tem benefícios metabólicos comprovados, mas o aumento de 50% é inexato."
+      } finally {
+        if (isMounted) {
+          setLoading(false);
         }
-      ]
+      }
     };
 
-    // Simular carregamento
-    setTimeout(() => {
-      setClaim(mockData);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    loadClaimData();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [id]);
+
+  // Resto do componente igual ao anterior...
+
+  const getStatusBadge = (status) => {
+    const statusConfig = {
+      verified: {
+        icon: <CheckCircle className="w-4 h-4" />,
+        text: "Verificado",
+        className: "bg-green-100 text-green-800"
+      },
+      refuted: {
+        icon: <XCircle className="w-4 h-4" />,
+        text: "Refutado",
+        className: "bg-red-100 text-red-800"
+      },
+      pending: {
+        icon: <AlertTriangle className="w-4 h-4" />,
+        text: "Pendente",
+        className: "bg-yellow-100 text-yellow-800"
+      }
+    };
+
+    const config = statusConfig[status] || statusConfig.pending;
+
+    return (
+      <Badge className={`flex items-center gap-2 ${config.className}`}>
+        {config.icon}
+        {config.text}
+      </Badge>
+    );
+  };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="w-8 h-8 border-4 border-t-blue-500 border-b-blue-500 rounded-full animate-spin" />
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-4 border-primary border-t-transparent" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-red-700">
-            <AlertCircle className="w-5 h-5" />
-            <p className="font-medium">{error}</p>
-          </div>
-        </div>
-      </div>
+      <Alert variant="destructive" className="m-4">
+        <AlertTitle>Erro</AlertTitle>
+        <AlertDescription>{error}</AlertDescription>
+      </Alert>
     );
   }
 
   if (!claim) {
     return (
-      <div className="p-6 max-w-2xl mx-auto">
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-          <div className="flex items-center gap-2 text-yellow-700">
-            <AlertCircle className="w-5 h-5" />
-            <p className="font-medium">Alegação não encontrada</p>
-          </div>
-        </div>
-      </div>
+      <Alert className="m-4">
+        <AlertTitle>Não encontrado</AlertTitle>
+        <AlertDescription>Claim não encontrado</AlertDescription>
+      </Alert>
     );
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto space-y-6">
-      <div className="flex justify-between items-start">
-        <h1 className="text-2xl font-bold">Detalhes da Alegação</h1>
-        <Badge
-          variant={
-            claim.status === 'verified' ? 'success' :
-            claim.status === 'refuted' ? 'destructive' : 'warning'
-          }
-        >
-          {claim.status === 'verified' && <CheckCircle className="w-4 h-4 mr-2" />}
-          {claim.status === 'refuted' && <XCircle className="w-4 h-4 mr-2" />}
-          {claim.status === 'questionable' && <AlertCircle className="w-4 h-4 mr-2" />}
-          {claim.status === 'verified' ? 'Verificado' :
-           claim.status === 'refuted' ? 'Refutado' : 'Em Análise'}
-        </Badge>
-      </div>
-
+    <div className="p-4 max-w-4xl mx-auto">
       <Card>
-        <CardHeader>
-          <CardTitle>Informações Básicas</CardTitle>
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>{claim.description}</CardTitle>
+          {getStatusBadge(claim.verificationStatus)}
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid md:grid-cols-2 gap-4">
+        <CardContent>
+          <div className="space-y-4">
             <div>
-              <h3 className="font-semibold mb-2">Alegação</h3>
+              <h3 className="text-lg font-semibold mb-2">Conteúdo</h3>
               <p>{claim.content}</p>
-              <p className="text-sm text-muted-foreground">
-                {claim.category} • {new Date(claim.date).toLocaleDateString('pt-BR')}
-              </p>
             </div>
+
             <div>
-              <h3 className="font-semibold mb-2">Fonte Original</h3>
-              <p className="text-blue-600">{claim.originalSource.url}</p>
-              <p className="text-sm text-muted-foreground">
-                Publicado em: {new Date(claim.originalSource.postDate).toLocaleDateString('pt-BR')}
+              <h3 className="text-lg font-semibold mb-2">Fonte Original</h3>
+              <p className="text-gray-600">
+                URL: {claim.originalSource?.url}<br />
+                Data: {new Date(claim.originalSource?.postDate).toLocaleDateString()}<br />
+                Engajamento: {claim.originalSource?.engagement?.likes} likes, {' '}
+                {claim.originalSource?.engagement?.comments} comentários, {' '}
+                {claim.originalSource?.engagement?.shares} compartilhamentos
               </p>
-              <div className="mt-2 flex gap-4">
-                <span>❤️ {claim.originalSource.engagement.likes}</span>
-                <span>💬 {claim.originalSource.engagement.comments}</span>
-                <span>🔄 {claim.originalSource.engagement.shares}</span>
-              </div>
             </div>
+
+            {claim.studies && claim.studies.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Estudos</h3>
+                {claim.studies.map((study, index) => (
+                  <div key={index} className="mb-4 p-4 bg-gray-50 rounded-lg">
+                    <h4 className="font-semibold">{study.title}</h4>
+                    <p className="text-sm text-gray-600">
+                      Autores: {study.authors}<br />
+                      Ano: {study.year}<br />
+                      Journal: {study.journal}<br />
+                      DOI: {study.doi}
+                    </p>
+                    <p className="mt-2">{study.summary}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {claim.verificationNotes && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Notas de Verificação</h3>
+                <p>{claim.verificationNotes}</p>
+              </div>
+            )}
+
+            {claim.expertOpinions && claim.expertOpinions.length > 0 && (
+              <div>
+                <h3 className="text-lg font-semibold mb-2">Opiniões de Especialistas</h3>
+                {claim.expertOpinions.map((expert, index) => (
+                  <div key={index} className="mb-4">
+                    <p className="font-semibold">{expert.expert}</p>
+                    <p className="text-sm text-gray-600">{expert.credential}</p>
+                    <p className="mt-1">{expert.opinion}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
-
-      <Tabs defaultValue="studies" className="w-full">
-        <TabsList>
-          <TabsTrigger value="studies">
-            <BookOpen className="w-4 h-4 mr-2" />
-            Estudos
-          </TabsTrigger>
-          <TabsTrigger value="experts">
-            <FileText className="w-4 h-4 mr-2" />
-            Especialistas
-          </TabsTrigger>
-        </TabsList>
-
-        <TabsContent value="studies">
-          <Card>
-            <CardContent className="pt-6">
-              {claim.studies.map((study) => (
-                <div key={study.id} className="mb-6 last:mb-0">
-                  <h3 className="text-lg font-semibold mb-2">{study.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {study.authors} • {study.journal} • {study.year}
-                  </p>
-                  <p className="mb-2">{study.summary}</p>
-                  <p className="text-blue-600">DOI: {study.doi}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="experts">
-          <Card>
-            <CardContent className="pt-6">
-              {claim.expertOpinions.map((expert) => (
-                <div key={expert.id} className="mb-6 last:mb-0">
-                  <h3 className="text-lg font-semibold mb-2">{expert.expert}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">
-                    {expert.credential}
-                  </p>
-                  <p>{expert.opinion}</p>
-                </div>
-              ))}
-            </CardContent>
-          </Card>
-        </TabsContent>
-      </Tabs>
     </div>
   );
 };
