@@ -1,44 +1,46 @@
 import React from "react";
 import '@/styles/components/ui/Button.css';
 
-const Button = React.forwardRef(({ 
+/**
+ * Componente de botão customizável com diversas variantes e tamanhos
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {string} props.variant Variante do botão ("primary" | "secondary" | "danger")
+ * @param {string} props.size Tamanho do botão ("small" | "medium" | "large")
+ * @param {React.Ref} ref Referência para o elemento do botão
+ */
+const Button = React.forwardRef(({
   className = '',
   variant = "primary",
   size = "medium",
-  ...props 
+  ...props
 }, ref) => {
-  const getButtonClasses = () => {
-    let classes = ['button'];
-    
-    // Add variant class
-    classes.push(`button-${variant}`);
-    
-    // Add size class
-    classes.push(`button-${size}`);
-    
-    // Add custom classes
-    if (className) {
-      classes.push(className);
-    }
-    
-    return classes.join(' ');
-  };
-
   return (
     <button
       ref={ref}
-      className={getButtonClasses()}
+      className={`button button-${variant} button-${size} ${className}`}
       {...props}
     />
   );
 });
 
-const ButtonGroup = React.forwardRef(({ className = '', ...props }, ref) => {
+/**
+ * Componente para agrupar botões com espaçamento consistente
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {React.Ref} ref Referência para o elemento do grupo
+ */
+const ButtonGroup = React.forwardRef(({
+  className = '',
+  ...props
+}, ref) => {
   return (
-    <div 
+    <div
       className={`button-group ${className}`}
-      ref={ref} 
-      {...props} 
+      ref={ref}
+      {...props}
     />
   );
 });

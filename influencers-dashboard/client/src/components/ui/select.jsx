@@ -3,14 +3,38 @@ import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
 import '@/styles/components/ui/Select.css';
 
+/**
+ * Componente raiz do Select
+ * Gerencia o estado e contexto de seleção
+ */
 const Select = SelectPrimitive.Root;
+
+/**
+ * Agrupa itens relacionados no Select
+ */
 const SelectGroup = SelectPrimitive.Group;
+
+/**
+ * Exibe o valor selecionado
+ */
 const SelectValue = SelectPrimitive.Value;
 
-const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) => (
+/**
+ * Botão de acionamento do Select
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {React.ReactNode} props.children Conteúdo do trigger
+ * @param {React.Ref} ref Referência para o elemento do trigger
+ */
+const SelectTrigger = React.forwardRef(({
+  className = '',
+  children,
+  ...props
+}, ref) => (
   <SelectPrimitive.Trigger
     ref={ref}
-    className={`select-trigger ${className || ''}`}
+    className={`select-trigger ${className}`}
     {...props}
   >
     {children}
@@ -19,13 +43,26 @@ const SelectTrigger = React.forwardRef(({ className, children, ...props }, ref) 
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));
-SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
 
-const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => (
+/**
+ * Container de conteúdo do Select
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {React.ReactNode} props.children Conteúdo do select
+ * @param {string} props.position Posição do popover ("popper" | "item-aligned")
+ * @param {React.Ref} ref Referência para o elemento do conteúdo
+ */
+const SelectContent = React.forwardRef(({
+  className = '',
+  children,
+  position = "popper",
+  ...props
+}, ref) => (
   <SelectPrimitive.Portal>
     <SelectPrimitive.Content
       ref={ref}
-      className={`select-content ${position === "popper" ? 'select-content-popper' : ''} ${className || ''}`}
+      className={`select-content ${position === "popper" ? 'select-content-popper' : ''} ${className}`}
       position={position}
       {...props}
     >
@@ -35,21 +72,41 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
     </SelectPrimitive.Content>
   </SelectPrimitive.Portal>
 ));
-SelectContent.displayName = SelectPrimitive.Content.displayName;
 
-const SelectLabel = React.forwardRef(({ className, ...props }, ref) => (
+/**
+ * Rótulo para grupos de itens no Select
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {React.Ref} ref Referência para o elemento do label
+ */
+const SelectLabel = React.forwardRef(({
+  className = '',
+  ...props
+}, ref) => (
   <SelectPrimitive.Label
     ref={ref}
-    className={`select-label ${className || ''}`}
+    className={`select-label ${className}`}
     {...props}
   />
 ));
-SelectLabel.displayName = SelectPrimitive.Label.displayName;
 
-const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => (
+/**
+ * Item selecionável no dropdown
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {React.ReactNode} props.children Texto do item
+ * @param {React.Ref} ref Referência para o elemento do item
+ */
+const SelectItem = React.forwardRef(({
+  className = '',
+  children,
+  ...props
+}, ref) => (
   <SelectPrimitive.Item
     ref={ref}
-    className={`select-item ${className || ''}`}
+    className={`select-item ${className}`}
     {...props}
   >
     <span className="select-item-indicator">
@@ -60,16 +117,43 @@ const SelectItem = React.forwardRef(({ className, children, ...props }, ref) => 
     <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
   </SelectPrimitive.Item>
 ));
-SelectItem.displayName = SelectPrimitive.Item.displayName;
 
-const SelectSeparator = React.forwardRef(({ className, ...props }, ref) => (
+/**
+ * Separador visual entre itens ou grupos
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {React.Ref} ref Referência para o elemento do separador
+ */
+const SelectSeparator = React.forwardRef(({
+  className = '',
+  ...props
+}, ref) => (
   <SelectPrimitive.Separator
     ref={ref}
-    className={`select-separator ${className || ''}`}
+    className={`select-separator ${className}`}
     {...props}
   />
 ));
+
+// Configurar displayName para cada componente
+SelectTrigger.displayName = SelectPrimitive.Trigger.displayName;
+SelectContent.displayName = SelectPrimitive.Content.displayName;
+SelectLabel.displayName = SelectPrimitive.Label.displayName;
+SelectItem.displayName = SelectPrimitive.Item.displayName;
 SelectSeparator.displayName = SelectPrimitive.Separator.displayName;
+
+// Exportar componentes individuais e um objeto com todos os componentes para facilitar importação
+const SelectComponents = {
+  Root: Select,
+  Group: SelectGroup,
+  Value: SelectValue,
+  Trigger: SelectTrigger,
+  Content: SelectContent,
+  Label: SelectLabel,
+  Item: SelectItem,
+  Separator: SelectSeparator
+};
 
 export {
   Select,
@@ -80,4 +164,5 @@ export {
   SelectLabel,
   SelectItem,
   SelectSeparator,
+  SelectComponents
 };

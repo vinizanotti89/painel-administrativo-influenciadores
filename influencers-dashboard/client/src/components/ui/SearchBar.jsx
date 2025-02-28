@@ -1,23 +1,54 @@
-import React, { useState } from 'react';
-import { useInfluencer } from '../../contexts/InfluencerContext';
+import React, { useState, useCallback } from 'react';
+import { debounce } from 'lodash';
+import useAsyncState from '@/hooks/useAsyncState';
 import '@/styles/components/ui/SearchBar.css';
 
-const SearchBar = ({ 
-  placeholder = 'Buscar influenciadores...', 
-  className = '' 
+/**
+ * Componente de barra de pesquisa com suporte para busca em tempo real
+ * com controle de debounce ou busca sob demanda
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.placeholder Texto de placeholder para o input
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {Function} props.onSearch Função chamada quando a busca é realizada
+ * @param {boolean} props.realtime Se verdadeiro, busca em tempo real com debounce
+ * @param {number} props.debounceTime Tempo de debounce em ms para busca em tempo real
+ */
+const SearchBar = ({
+  placeholder = 'Buscar influenciadores...',
+  className = '',
+  onSearch,
+  realtime = false,
+  debounceTime = 500
 }) => {
   const [searchTerm, setSearchTerm] = useState('');
-  const { updateFilters } = useInfluencer();
+  const { loading: isSearching, execute } = useAsyncState();
+
+  // Função de busca com debounce para evitar excesso de requisições
+  const debouncedSearch = useCallback(
+    debounce((value) => {
+      if (onSearch) {
+        execute(() => onSearch(value));
+      }
+    }, debounceTime),
+    [onSearch, debounceTime, execute]
+  );
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    updateFilters({ search: searchTerm });
+    if (onSearch && !realtime) {
+      execute(() => onSearch(searchTerm));
+    }
   };
 
   const handleChange = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    updateFilters({ search: value }); // Busca em tempo real
+
+    // Se estiver no modo de busca em tempo real, aciona o debounce
+    if (realtime && onSearch) {
+      debouncedSearch(value);
+    }
   };
 
   return (
@@ -29,27 +60,36 @@ const SearchBar = ({
           onChange={handleChange}
           className="search-input"
           placeholder={placeholder}
+          disabled={isSearching}
         />
-        <button type="submit" className="search-button">
+        <button
+          type="submit"
+          className={`search-button ${isSearching ? 'search-button-loading' : ''}`}
+          disabled={isSearching || (!searchTerm.trim() && !realtime)}
+        >
+          {isSearching ? (
+            <span className="search-button-loading-indicator" />
+          ) : (
+            <svg
+              className="search-icon"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          )}
           <span className="search-button-text">Buscar</span>
-          <svg
-            className="search-icon"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <circle cx="11" cy="11" r="8" />
-            <path d="m21 21-4.3-4.3" />
-          </svg>
         </button>
       </div>
     </form>
   );
 };
 
-export default SearchBar;
+export { SearchBar };

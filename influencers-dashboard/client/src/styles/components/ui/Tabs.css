@@ -1,11 +1,14 @@
+@import '@/styles/themes.css';
+
 .tabs-list {
   display: inline-flex;
   height: 2.5rem;
   align-items: center;
   justify-content: center;
   border-radius: 0.375rem;
-  background-color: #f3f4f6;
+  background-color: var(--badge-background);
   padding: 0.25rem;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .tabs-trigger {
@@ -17,20 +20,33 @@
   padding: 0.375rem 0.75rem;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all 0.2s;
+  color: var(--text-secondary);
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
 }
 
 .tabs-trigger[data-state='active'] {
-  background-color: white;
-  color: #1f2937;
+  background-color: var(--card-background);
+  color: var(--text-primary);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .tabs-content {
   margin-top: 0.5rem;
+  color: var(--text-primary);
 }
 
 .tabs-content:focus {
   outline: none;
+}
+
+/* Dark Theme Support */
+[data-theme="dark"] .tabs-trigger[data-state='active'] {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Corrigindo para acessibilidade - foco visível para navegação por teclado */
+.tabs-trigger:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
 }

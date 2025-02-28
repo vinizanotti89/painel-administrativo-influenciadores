@@ -1,18 +1,27 @@
 import React from "react";
-import SearchBar from "@/components/ui/SearchBar";
-import '@/styles/layout/MainContent.css';
+import { SearchBar } from "@/components/ui/SearchBar";
+import '@/styles/layout/mainContent.css';
 
-const MainContent = ({ children }) => {
+const MainContent = React.forwardRef(({
+  children,
+  className = '',
+  showSearchBar = true,
+  ...props
+}, ref) => {
   return (
-    <main className="main-content">
+    <main className={`main-content ${className}`} ref={ref} {...props}>
       <div className="content-container">
-        <div className="search-container">
-          <SearchBar />
-        </div>
+        {showSearchBar && (
+          <div className="search-container">
+            <SearchBar />
+          </div>
+        )}
         {children}
       </div>
     </main>
   );
-};
+});
 
-export default MainContent;
+MainContent.displayName = 'MainContent';
+
+export { MainContent };

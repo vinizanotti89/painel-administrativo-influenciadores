@@ -1,63 +1,563 @@
-import React, { useState, useEffect } from 'react';
-import { useInfluencer } from '@/contexts/InfluencerContext';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Button, ButtonGroup } from '@/components/ui/button';
-import Input from '@/components/ui/Input';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import instagramService from '@/services/instagram';
+import youtubeService from '@/services/youtube';
+import linkedinService from '@/services/linkedin';
+import { useTranslation } from '@/hooks/useTranslation';
+import { errorService } from '@/services/errorService';
 import '@/styles/pages/SearchInfluencer.css';
 
-const SearchInfluencer = () => {
-  const { influencers, total, fetchInfluencers, filters, updateFilters } = useInfluencer();
-  const [searchTerm, setSearchTerm] = useState(filters.search || '');
-  const [selectedCategory, setSelectedCategory] = useState(filters.category || '');
-  const [selectedPlatform, setSelectedPlatform] = useState(filters.platform || '');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+const SearchInfluencer = React.forwardRef(({ className = '', ...props }, ref) => {
+  const { t, language } = useTranslation();
 
-  useEffect(() => {
-    updateFilters({ search: searchTerm, category: selectedCategory, platform: selectedPlatform });
-    setCurrentPage(1);
-    fetchInfluencers();
-  }, [searchTerm, selectedCategory, selectedPlatform, fetchInfluencers, updateFilters]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [searchParams, setSearchParams] = useState({
+    term: '',
+    category: '',
+    platform: ''
+  });
+  const [results, setResults] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    pageSize: 10
+  });
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-    fetchInfluencers();
+  // Função para calcular o Trust Score com base em dados de cada plataforma
+  const calculateTrustScore = async (data, platform) => {
+    try {
+      if (platform === 'Instagram') {
+        // Cálculo para Instagram baseado em engagement e qualidade de conteúdo
+        const mediaInsights = await instagramService.getMediaInsights(data.id);
+        const engagementRate = calculateEngagement(mediaInsights);
+        const contentQuality = analyzeContentQuality(mediaInsights);
+        return Math.round((engagementRate * 0.6 + contentQuality * 0.4) * 100);
+      } else if (platform === 'YouTube') {
+        // Cálculo para YouTube baseado em views, likes e comentários
+        const channelVideos = await youtubeService.getChannelVideos(data.channelId || data.id);
+        if (!channelVideos || channelVideos.length === 0) return 65; // Valor padrão se não houver dados
+
+        const totalViews = channelVideos.reduce((sum, video) =>
+          sum + (parseInt(video.statistics?.viewCount) || 0), 0);
+        const totalLikes = channelVideos.reduce((sum, video) =>
+          sum + (parseInt(video.statistics?.likeCount) || 0), 0);
+        const totalComments = channelVideos.reduce((sum, video) =>
+          sum + (parseInt(video.statistics?.commentCount) || 0), 0);
+
+        const avgViews = totalViews / channelVideos.length;
+        const engagement = ((totalLikes + totalComments) / totalViews) * 100;
+
+        // Fórmula ponderada para calcular trust score
+        const viewScore = Math.min(avgViews / 10000, 1) * 40; // Máximo de 40 pontos
+        const engagementScore = Math.min(engagement * 2, 1) * 60; // Máximo de 60 pontos
+
+        return Math.round(viewScore + engagementScore);
+      } else if (platform === 'LinkedIn') {
+        // Cálculo para LinkedIn baseado em atividade profissional e engagement
+        const posts = await linkedinService.getPosts();
+        const analytics = posts && posts.length > 0
+          ? await linkedinService.getPostAnalytics(posts[0].id)
+          : null;
+
+        const followersCount = (await linkedinService.getFollowers()).count || 1;
+
+        // Calcular engagement com base em likes, comentários e compartilhamentos
+        let engagement = 0;
+        if (analytics && posts.length > 0) {
+          const totalEngagements = posts.reduce((sum, post) =>
+            sum + (post.totalShareStatistics?.shareCount || 0) +
+            (post.totalShareStatistics?.likeCount || 0) +
+            (post.totalShareStatistics?.commentCount || 0), 0);
+
+          engagement = (totalEngagements / posts.length) / followersCount * 100;
+        }
+
+        // Trust score baseado em profissionalismo (peso maior) e engagement
+        const professionalismScore = 70; // Base alta devido ao caráter profissional do LinkedIn
+        const engagementScore = Math.min(engagement * 3, 30); // Máximo de 30 pontos
+
+        return Math.round(professionalismScore + engagementScore);
+      }
+
+      return 60; // Valor padrão para outras plataformas
+    } catch (error) {
+      console.error(`Error calculating trust score for ${platform}:`, error);
+      errorService.reportError('trust_score_calculation_error', error, { platform });
+      return 50; // Valor padrão em caso de erro
+    }
   };
 
-  const handlePageSizeChange = (size) => {
-    setPageSize(size);
-    setCurrentPage(1);
-    fetchInfluencers();
+  // Analisa o conteúdo para determinar qualidade (0-1)
+  const analyzeContentQuality = (mediaItems) => {
+    if (!mediaItems || mediaItems.length === 0) return 0.7; // Valor padrão
+
+    // Análise baseada em engagement consistente e captioning
+    const engagementConsistency = calculateEngagementConsistency(mediaItems);
+    const captionQuality = evaluateCaptionQuality(mediaItems);
+
+    return (engagementConsistency * 0.7) + (captionQuality * 0.3);
+  };
+
+  // Calcula a consistência de engagement (0-1)
+  const calculateEngagementConsistency = (mediaItems) => {
+    if (!mediaItems || mediaItems.length < 3) return 0.6; // Precisa de pelo menos 3 itens
+
+    const engagementRates = mediaItems.map(item => {
+      const likes = item.like_count || 0;
+      const comments = item.comments_count || 0;
+      const totalEngagement = likes + comments;
+      return totalEngagement;
+    });
+
+    // Calcula o desvio padrão das taxas de engagement
+    const avg = engagementRates.reduce((sum, rate) => sum + rate, 0) / engagementRates.length;
+    const squareDiffs = engagementRates.map(rate => Math.pow(rate - avg, 2));
+    const avgSquareDiff = squareDiffs.reduce((sum, diff) => sum + diff, 0) / squareDiffs.length;
+    const stdDev = Math.sqrt(avgSquareDiff);
+
+    // Menor desvio padrão = maior consistência
+    const normalizedStdDev = Math.min(stdDev / avg, 1);
+    return 1 - normalizedStdDev; // Inverte para que menor desvio = maior pontuação
+  };
+
+  // Avalia a qualidade das legendas/descrições (0-1)
+  const evaluateCaptionQuality = (mediaItems) => {
+    if (!mediaItems || mediaItems.length === 0) return 0.5;
+
+    const captionScores = mediaItems.map(item => {
+      const caption = item.caption || '';
+      // Fatores simples de qualidade: comprimento, uso de hashtags
+      const length = Math.min(caption.length / 200, 1); // Até 200 caracteres
+      const hashtagCount = (caption.match(/#/g) || []).length;
+      const hashtagScore = hashtagCount > 0 && hashtagCount <= 10 ? 0.8 : 0.3;
+
+      return (length * 0.6) + (hashtagScore * 0.4);
+    });
+
+    return captionScores.reduce((sum, score) => sum + score, 0) / captionScores.length;
+  };
+
+  // Extrai categorias dos dados do influenciador
+  const processCategories = async (data, platform) => {
+    if (!data) return [t('categories.general')];
+
+    try {
+      if (platform === 'Instagram') {
+        // Extrai categorias das mídias do Instagram
+        const userMedia = await instagramService.getUserMedia();
+
+        // Analisar hashtags para determinar categorias
+        const allHashtags = userMedia
+          .map(media => {
+            const caption = media.caption || '';
+            const hashtags = caption.match(/#(\w+)/g) || [];
+            return hashtags.map(tag => tag.substring(1).toLowerCase());
+          })
+          .flat();
+
+        // Mapeamento de hashtags comuns para categorias
+        const categoryKeywords = {
+          'saude': 'health',
+          'fitness': 'fitness',
+          'lifestyle': 'lifestyle',
+          'beleza': 'beauty',
+          'nutrição': 'nutrition',
+          'nutricao': 'nutrition',
+          'moda': 'fashion',
+          'esporte': 'sports',
+          'esportes': 'sports',
+          'medicina': 'health',
+          'yoga': 'fitness',
+          'crossfit': 'fitness',
+          'dieta': 'nutrition',
+          'receitas': 'food',
+          'viagem': 'travel',
+          'turismo': 'travel',
+          'tecnologia': 'technology',
+          'games': 'games',
+          'jogos': 'games'
+        };
+
+        // Conta ocorrências de cada categoria
+        const categoryCounts = {};
+        allHashtags.forEach(tag => {
+          Object.entries(categoryKeywords).forEach(([key, category]) => {
+            if (tag.includes(key)) {
+              categoryCounts[category] = (categoryCounts[category] || 0) + 1;
+            }
+          });
+        });
+
+        // Seleciona as top categorias (até 3)
+        const topCategories = Object.entries(categoryCounts)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3)
+          .map(entry => t(`categories.${entry[0]}`));
+
+        return topCategories.length > 0 ? topCategories : [t('categories.lifestyle')];
+      }
+      else if (platform === 'YouTube') {
+        // Para YouTube, usa categorias do próprio YouTube
+        const channelData = data.rawData || data;
+        const categoryId = channelData.snippet?.categoryId;
+
+        // Mapeia os IDs de categoria do YouTube para chaves de tradução
+        const youtubeCategoryMap = {
+          '1': 'youtube.categories.film',
+          '2': 'youtube.categories.autos',
+          '10': 'categories.music',
+          '15': 'youtube.categories.pets',
+          '17': 'categories.sports',
+          '18': 'youtube.categories.shortMovies',
+          '19': 'youtube.categories.travel',
+          '20': 'categories.games',
+          '21': 'youtube.categories.videoblogs',
+          '22': 'youtube.categories.people',
+          '23': 'youtube.categories.comedy',
+          '24': 'youtube.categories.entertainment',
+          '25': 'youtube.categories.news',
+          '26': 'youtube.categories.howto',
+          '27': 'categories.education',
+          '28': 'categories.technology',
+          '29': 'youtube.categories.nonprofit'
+        };
+
+        const categoryKey = categoryId ? youtubeCategoryMap[categoryId] : null;
+        const categoryName = categoryKey ? t(categoryKey) : null;
+
+        // Tenta extrair tópicos das tags se disponíveis
+        let additionalCategories = [];
+        if (channelData.snippet?.tags) {
+          const tags = channelData.snippet.tags;
+          const commonKeywords = {
+            'saúde': 'health',
+            'saude': 'health',
+            'fitness': 'fitness',
+            'medicina': 'health',
+            'nutrição': 'nutrition',
+            'nutricao': 'nutrition',
+            'beleza': 'beauty',
+            'lifestyle': 'lifestyle'
+          };
+
+          // Mapeia as tags encontradas para suas chaves de tradução
+          for (const [keyword, translationKey] of Object.entries(commonKeywords)) {
+            if (tags.some(t => t.toLowerCase().includes(keyword.toLowerCase()))) {
+              additionalCategories.push(t(`categories.${translationKey}`));
+            }
+          }
+        }
+
+        // Combina e remove duplicatas
+        const allCategories = [...new Set([
+          categoryName,
+          ...additionalCategories
+        ])].filter(Boolean);
+
+        return allCategories.length > 0 ? allCategories : [t('influencerSearch.generalContent')];
+      }
+      else if (platform === 'LinkedIn') {
+        // Para LinkedIn, extrai do perfil e posts
+        const profile = await linkedinService.getProfile();
+        const posts = await linkedinService.getPosts();
+
+        // Categorias baseadas na indústria do perfil
+        let categories = [];
+
+        if (profile.industry) {
+          categories.push(profile.industry);
+        }
+
+        // Analisa posts para identificar temas comuns
+        if (posts && posts.length > 0) {
+          const commonKeywords = {
+            'marketing': 'marketing',
+            'vendas': 'sales',
+            'saúde': 'health',
+            'saude': 'health',
+            'tecnologia': 'technology',
+            'finanças': 'finance',
+            'financas': 'finance',
+            'gestão': 'management',
+            'gestao': 'management',
+            'liderança': 'leadership',
+            'lideranca': 'leadership',
+            'rh': 'hr',
+            'recursos humanos': 'hr',
+            'consultoria': 'consulting',
+            'educação': 'education',
+            'educacao': 'education',
+            'carreira': 'career'
+          };
+
+          // Analisa texto dos posts
+          const postContents = posts.map(post => post.commentary?.text || '').join(' ').toLowerCase();
+
+          // Mapeia as palavras-chave encontradas para suas chaves de tradução
+          for (const [keyword, translationKey] of Object.entries(commonKeywords)) {
+            if (postContents.includes(keyword)) {
+              categories.push(t(`categories.${translationKey}`));
+            }
+          }
+        }
+
+        // Remove duplicatas e limita a 3 categorias
+        categories = [...new Set(categories)].slice(0, 3);
+
+        return categories.length > 0 ? categories : [t('categories.professional')];
+      }
+
+      return [t('categories.general')]; // Categoria padrão
+    } catch (error) {
+      console.error(`Error processing categories for ${platform}:`, error);
+      errorService.reportError('categories_processing_error', error, { platform });
+      return [t('categories.general')];
+    }
+  };
+
+  // Calcula taxa de engagement
+  const calculateEngagement = (data) => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      return 0;
+    }
+
+    try {
+      // Total de likes e comentários dividido pelo número de posts
+      const totalLikes = data.reduce((sum, item) => sum + (parseInt(item.like_count) || 0), 0);
+      const totalComments = data.reduce((sum, item) => sum + (parseInt(item.comments_count) || 0), 0);
+      const totalEngagement = totalLikes + totalComments;
+
+      // Taxa média de engagement por post
+      const engagementRate = totalEngagement / data.length;
+
+      return engagementRate;
+    } catch (error) {
+      console.error('Error calculating engagement:', error);
+      errorService.reportError('engagement_calculation_error', error);
+      return 0;
+    }
+  };
+
+  // Processa dados do influenciador
+  const processInfluencerData = async (data, platform) => {
+    try {
+      if (!data) return null;
+
+      if (platform === 'Instagram') {
+        const userMedia = await instagramService.getUserMedia();
+        const trustScore = await calculateTrustScore(data, 'Instagram');
+        const categories = await processCategories(data, 'Instagram');
+        const engagement = calculateEngagement(userMedia);
+
+        return {
+          id: data.id,
+          name: data.username,
+          platform: 'Instagram',
+          followers: data.media_count || 0,
+          trustScore,
+          categories,
+          engagement,
+          profileUrl: data.profile_picture_url || 'https://via.placeholder.com/150',
+          statistics: {
+            posts: data.media_count || 0,
+            engagement: (engagement / (data.media_count || 1) * 100).toFixed(2)
+          }
+        };
+      }
+      else if (platform === 'YouTube') {
+        const channelData = data.rawData || data;
+        const trustScore = await calculateTrustScore(channelData, 'YouTube');
+        const categories = await processCategories(channelData, 'YouTube');
+
+        return {
+          id: channelData.id,
+          name: channelData.snippet?.title || data.channelName,
+          platform: 'YouTube',
+          followers: parseInt(channelData.statistics?.subscriberCount) || 0,
+          trustScore,
+          categories,
+          engagement: parseFloat(data.statistics?.engagement || '0'),
+          profileUrl: channelData.snippet?.thumbnails?.default?.url || data.thumbnailUrl || 'https://via.placeholder.com/150',
+          statistics: {
+            views: parseInt(channelData.statistics?.viewCount) || 0,
+            videos: parseInt(channelData.statistics?.videoCount) || 0
+          }
+        };
+      }
+      else if (platform === 'LinkedIn') {
+        const profileData = await linkedinService.getProfile();
+        const trustScore = await calculateTrustScore(profileData, 'LinkedIn');
+        const categories = await processCategories(profileData, 'LinkedIn');
+        const followers = (await linkedinService.getFollowers()).count || 0;
+
+        return {
+          id: profileData.id,
+          name: `${profileData.localizedFirstName} ${profileData.localizedLastName}`,
+          platform: 'LinkedIn',
+          followers: followers,
+          trustScore,
+          categories,
+          engagement: 0, // Será calculado com dados reais
+          profileUrl: profileData.profilePicture?.displayImage || 'https://via.placeholder.com/150',
+          statistics: {
+            connections: followers,
+            posts: (await linkedinService.getPosts()).length || 0
+          }
+        };
+      }
+
+      return null;
+    } catch (error) {
+      console.error(`Error processing ${platform} influencer data:`, error);
+      errorService.reportError('influencer_data_processing_error', error, { platform });
+      throw error;
+    }
+  };
+
+  // Busca influenciadores
+  const searchInfluencers = async () => {
+    if (!searchParams.term && !searchParams.category && !searchParams.platform) {
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const platformPromises = [];
+
+      if (!searchParams.platform || searchParams.platform === 'Instagram') {
+        platformPromises.push(instagramService.getProfile(searchParams.term)
+          .then(data => data ? processInfluencerData(data, 'Instagram') : null)
+          .catch(err => {
+            console.error('Instagram search error:', err);
+            return null;
+          })
+        );
+      }
+
+      if (!searchParams.platform || searchParams.platform === 'YouTube') {
+        platformPromises.push(youtubeService.searchChannel(searchParams.term)
+          .then(data => data ? processInfluencerData(data, 'YouTube') : null)
+          .catch(err => {
+            console.error('YouTube search error:', err);
+            return null;
+          })
+        );
+      }
+
+      if (!searchParams.platform || searchParams.platform === 'LinkedIn') {
+        platformPromises.push(linkedinService.getProfile()
+          .then(data => data ? processInfluencerData(data, 'LinkedIn') : null)
+          .catch(err => {
+            console.error('LinkedIn search error:', err);
+            return null;
+          })
+        );
+      }
+
+      const platformResults = await Promise.allSettled(platformPromises);
+
+      // Filtra resultados válidos
+      let combinedResults = platformResults
+        .filter(result => result.status === 'fulfilled' && result.value)
+        .map(result => result.value);
+
+      // Aplica filtro de categoria se necessário
+      if (searchParams.category) {
+        combinedResults = combinedResults.filter(inf =>
+          inf.categories.some(cat => cat.toLowerCase().includes(searchParams.category.toLowerCase()))
+        );
+      }
+
+      // Paginação
+      const totalPages = Math.ceil(combinedResults.length / pagination.pageSize);
+      setPagination(prev => ({
+        ...prev,
+        totalPages: Math.max(1, totalPages)
+      }));
+
+      const startIndex = (pagination.currentPage - 1) * pagination.pageSize;
+      const endIndex = startIndex + pagination.pageSize;
+      setResults(combinedResults.slice(startIndex, endIndex));
+
+    } catch (err) {
+      setError(errorService.getErrorMessage(err, errorService.ERROR_CATEGORIES.ASYNC_OPERATIONS) ||
+        t('influencerSearch.errors.fetchError'));
+      console.error('Error searching influencers:', err);
+      errorService.reportError('influencer_search_error', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Tratamento de mudança de página
+  const handlePageChange = (page) => {
+    setPagination(prev => ({
+      ...prev,
+      currentPage: page
+    }));
+    searchInfluencers();
+  };
+
+  // Formata números para exibição
+  const formatNumber = (num) => {
+    if (num >= 1000000) {
+      return (num / 1000000).toFixed(1) + 'M';
+    }
+    if (num >= 1000) {
+      return (num / 1000).toFixed(1) + 'K';
+    }
+    return num.toString();
+  };
+
+  // Determina classe CSS para o Trust Score
+  const getTrustScoreClass = (score) => {
+    if (score >= 80) return 'high';
+    if (score >= 60) return 'medium';
+    return 'low';
   };
 
   return (
-    <div className="search-container">
+    <div className={`search-container ${className}`} ref={ref} {...props}>
       <div className="search-header">
-        <h1 className="search-title">Buscar Influenciadores</h1>
+        <h1 className="search-title">{t('influencerSearch.title')}</h1>
         <div className="search-filters">
-          <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+          <Select
+            value={searchParams.category}
+            onValueChange={(value) => setSearchParams(prev => ({ ...prev, category: value }))}
+          >
             <SelectTrigger>
-              <SelectValue placeholder="Categoria" />
+              <SelectValue placeholder={t('influencerSearch.filters.category')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas</SelectItem>
-              <SelectItem value="Nutrição">Nutrição</SelectItem>
-              <SelectItem value="Saúde Mental">Saúde Mental</SelectItem>
-              <SelectItem value="Fitness">Fitness</SelectItem>
-              <SelectItem value="Viagem">Viagem</SelectItem>
+              <SelectItem value="">{t('influencerSearch.filters.allCategories')}</SelectItem>
+              <SelectItem value="Saúde">{t('categories.health')}</SelectItem>
+              <SelectItem value="Nutrição">{t('categories.nutrition')}</SelectItem>
+              <SelectItem value="Fitness">{t('categories.fitness')}</SelectItem>
+              <SelectItem value="Beleza">{t('categories.beauty')}</SelectItem>
+              <SelectItem value="Lifestyle">{t('categories.lifestyle')}</SelectItem>
+              <SelectItem value="Tecnologia">{t('categories.technology')}</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={selectedPlatform} onValueChange={setSelectedPlatform}>
+
+          <Select
+            value={searchParams.platform}
+            onValueChange={(value) => setSearchParams(prev => ({ ...prev, platform: value }))}
+          >
             <SelectTrigger>
-              <SelectValue placeholder="Plataforma" />
+              <SelectValue placeholder={t('influencerSearch.filters.platform')} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">Todas</SelectItem>
-              <SelectItem value="Instagram">Instagram</SelectItem>
-              <SelectItem value="YouTube">YouTube</SelectItem>
-              <SelectItem value="TikTok">TikTok</SelectItem>
+              <SelectItem value="">{t('influencerSearch.filters.allPlatforms')}</SelectItem>
+              <SelectItem value="Instagram">{t('claims.platforms.instagram')}</SelectItem>
+              <SelectItem value="YouTube">{t('claims.platforms.youtube')}</SelectItem>
+              <SelectItem value="LinkedIn">{t('claims.platforms.linkedin')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -65,74 +565,123 @@ const SearchInfluencer = () => {
 
       <div className="search-bar">
         <Input
-          placeholder="Buscar influenciadores..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          placeholder={t('influencerSearch.searchPlaceholder')}
+          value={searchParams.term}
+          onChange={(e) => setSearchParams(prev => ({ ...prev, term: e.target.value }))}
+          onKeyPress={(e) => e.key === 'Enter' && searchInfluencers()}
         />
-        <Button>Buscar</Button>
+        <Button onClick={searchInfluencers} disabled={loading}>
+          {loading ? t('influencerSearch.searching') : t('influencerSearch.search')}
+        </Button>
       </div>
 
+      {error && (
+        <div className="error-message">
+          {error}
+        </div>
+      )}
+
+      {results.length === 0 && !loading && !error && (
+        <div className="no-results-message">{t('influencerSearch.noResults')}</div>
+      )}
+
       <div className="influencers-grid">
-        {influencers.map((influencer) => (
-          <Card key={influencer.id}>
+        {results.map((influencer) => (
+          <Card key={influencer.id} className="influencer-card">
             <CardHeader>
-              <CardTitle>{influencer.name}</CardTitle>
-              <Badge variant="outline">{influencer.platform}</Badge>
+              <div className="influencer-header">
+                <img
+                  src={influencer.profileUrl}
+                  alt={influencer.name}
+                  className="profile-image"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/150';
+                  }}
+                />
+                <div className="influencer-info">
+                  <CardTitle>{influencer.name}</CardTitle>
+                  <Badge>{influencer.platform}</Badge>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="influencer-stats">
                 <div className="stat-row">
-                  <span className="stat-label">Seguidores:</span>
-                  <span>{influencer.followers.toLocaleString()}</span>
+                  <span className="stat-label">{t('influencerSearch.stats.followers')}:</span>
+                  <span>{formatNumber(influencer.followers)}</span>
                 </div>
                 <div className="stat-row">
-                  <span className="stat-label">Score de Confiabilidade:</span>
-                  <span>{influencer.trustScore}%</span>
+                  <span className="stat-label">{t('influencerSearch.stats.trustScore')}:</span>
+                  <span className={`trust-score ${getTrustScoreClass(influencer.trustScore)}`}>
+                    {influencer.trustScore}%
+                  </span>
                 </div>
-                <div className="stat-row">
-                  <span className="stat-label">Categorias:</span>
-                  <div className="categories">
-                    {influencer.categories.map((category) => (
-                      <Badge key={category} variant="outline">
-                        {category}
-                      </Badge>
-                    ))}
+
+                {influencer.platform === 'Instagram' && (
+                  <div className="stat-row">
+                    <span className="stat-label">{t('influencerSearch.stats.posts')}:</span>
+                    <span>{influencer.statistics.posts}</span>
                   </div>
+                )}
+
+                {influencer.platform === 'YouTube' && (
+                  <>
+                    <div className="stat-row">
+                      <span className="stat-label">{t('influencerSearch.stats.views')}:</span>
+                      <span>{formatNumber(influencer.statistics.views)}</span>
+                    </div>
+                    <div className="stat-row">
+                      <span className="stat-label">{t('influencerSearch.stats.videos')}:</span>
+                      <span>{influencer.statistics.videos}</span>
+                    </div>
+                  </>
+                )}
+
+                {influencer.platform === 'LinkedIn' && (
+                  <div className="stat-row">
+                    <span className="stat-label">{t('influencerSearch.stats.connections')}:</span>
+                    <span>{formatNumber(influencer.statistics.connections)}</span>
+                  </div>
+                )}
+
+                <div className="categories">
+                  {influencer.categories.map((category) => (
+                    <Badge key={category} variant="outline" className="category-badge">
+                      {category}
+                    </Badge>
+                  ))}
                 </div>
               </div>
-              <Button variant="ghost" href={`/influencer-details/${influencer.id}`}>
-                Ver Detalhes
+              <Button
+                variant="ghost"
+                className="details-button"
+                onClick={() => window.location.href = `/influencer-details/${influencer.id}`}
+              >
+                {t('influencerSearch.viewDetails')}
               </Button>
             </CardContent>
           </Card>
         ))}
       </div>
 
-      <div className="pagination">
-        <ButtonGroup>
-          {Array.from({ length: Math.ceil(total / pageSize) }, (_, i) => i + 1).map((page) => (
+      {results.length > 0 && pagination.totalPages > 1 && (
+        <div className="pagination">
+          {Array.from({ length: pagination.totalPages }, (_, i) => i + 1).map((page) => (
             <Button
               key={page}
-              variant={currentPage === page ? 'solid' : 'outline'}
+              variant={pagination.currentPage === page ? 'solid' : 'outline'}
               onClick={() => handlePageChange(page)}
+              className={`pagination-button ${pagination.currentPage === page ? 'active' : ''}`}
             >
               {page}
             </Button>
           ))}
-        </ButtonGroup>
-        <Select value={pageSize.toString()} onValueChange={handlePageSizeChange}>
-          <SelectTrigger>
-            <SelectValue>{pageSize}</SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="10">10</SelectItem>
-            <SelectItem value="20">20</SelectItem>
-            <SelectItem value="50">50</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+        </div>
+      )}
     </div>
   );
-};
+});
+
+SearchInfluencer.displayName = 'SearchInfluencer';
 
 export default SearchInfluencer;

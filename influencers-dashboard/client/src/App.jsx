@@ -1,46 +1,56 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Layout from './components/layout/Layout';
-import Dashboard from './pages/Dashboard';
-import InfluencerList from './pages/InfluencerList';
-import { InfluencerProvider } from './contexts/InfluencerContext';
-import InfluencerDetails from './pages/InfluencerDetails';
-import Analytics from './pages/Analytics';
-import ClaimDetails from './pages/ClaimDetails';
-import HealthClaims from './pages/HealthClaims';
-import HealthClaimForm from './pages/HealthClaimForm';
-import Reports from './pages/Reports';
-import Settings from './pages/Settings';
-import SearchInfluencer from './pages/SearchInfluencer';
-import SearchPage from './pages/SearchPage';
-import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
-import TrustLeaderboard from './pages/TrustLeaderboard';
-import '@/styles/index.css';
-import '@/styles/themes.css';
+import { ThemeProvider } from '@/contexts/ThemeContext';
+import { LanguageProvider } from '@/contexts/LanguageContext';
+
+// Componentes de layout
+import Layout from '@/components/layout/Layout';
+
+// Páginas
+import Dashboard from '@/pages/Dashboard';
+import InfluencerDetails from '@/pages/InfluencerDetails';
+import InfluencerList from '@/pages/InfluencerList';
+import SearchInfluencer from '@/pages/SearchInfluencer';
+import InfluencerSearchComponent from '@/pages/InfluencerSearchComponent';
+import Analytics from '@/pages/Analytics';
+import Reports from '@/pages/Reports';
+import Settings from '@/pages/Settings';
+import APITestPage from '@/pages/APITestPage';
+import ClaimDetails from '@/pages/ClaimDetails';
+import HealthClaims from '@/pages/HealthClaims';
+import HealthClaimForm from '@/pages/HealthClaimForm';
+import SearchPage from '@/pages/SearchPage';
+import TrustLeaderboard from '@/pages/TrustLeaderboard';
+
+// Componente de autenticação
+import AuthCallback from '@/components/auth/AuthCallback';
 
 function App() {
   return (
     <ThemeProvider>
-      <Router>
-        <InfluencerProvider>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/influencers" element={<InfluencerList />} />
-              <Route path="/influencers/:id" element={<InfluencerDetails />} />
-              <Route path="/analytics" element={<Analytics />} />
-              <Route path="/claims/new" element={<HealthClaimForm />} />
-              <Route path="/claims/:id" element={<ClaimDetails />} />
-              <Route path="/claims" element={<HealthClaims />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/settings" element={<Settings />} />
-              <Route path="/search/influencer" element={<SearchInfluencer />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/leaderboard" element={<TrustLeaderboard />} />
-            </Routes>
-          </Layout>
-        </InfluencerProvider>
-      </Router>
+      <LanguageProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="influencers" element={<InfluencerList />} />
+              <Route path="influencer-details/:id" element={<InfluencerDetails />} />
+              <Route path="search" element={<SearchInfluencer />} />
+              <Route path="search-component" element={<InfluencerSearchComponent />} />
+              <Route path="search-page" element={<SearchPage />} />
+              <Route path="analytics" element={<Analytics />} />
+              <Route path="reports" element={<Reports />} />
+              <Route path="settings" element={<Settings />} />
+              <Route path="api-test" element={<APITestPage />} />
+              <Route path="claim-details/:id" element={<ClaimDetails />} />
+              <Route path="health-claims/:id" element={<HealthClaims />} />
+              <Route path="health-claim-form/:id?" element={<HealthClaimForm />} />
+              <Route path="trust-leaderboard" element={<TrustLeaderboard />} />
+            </Route>
+            <Route path="/auth/callback" element={<AuthCallback />} />
+          </Routes>
+        </Router>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }

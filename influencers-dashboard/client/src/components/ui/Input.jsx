@@ -1,7 +1,7 @@
 import React from "react";
 import '@/styles/components/ui/Input.css';
 
-const Input = ({ 
+const Input = React.forwardRef(({
   name,
   label,
   type = 'text',
@@ -11,12 +11,12 @@ const Input = ({
   placeholder = '',
   className = '',
   required = false,
-  ...props 
-}) => {
+  ...props
+}, ref) => {
   return (
     <div className="input-container">
       {label && (
-        <label 
+        <label
           htmlFor={name}
           className="input-label"
         >
@@ -25,6 +25,7 @@ const Input = ({
         </label>
       )}
       <input
+        ref={ref}
         id={name}
         name={name}
         type={type}
@@ -42,7 +43,8 @@ const Input = ({
       )}
     </div>
   );
-};
+});
 
 Input.displayName = "Input";
-export default Input;
+
+export { Input };

@@ -4,12 +4,13 @@
   background-color: var(--card-background);
   border-bottom: 1px solid var(--border-color);
   height: 64px;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
 .header-container {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 0 var(--spacing-4);
+  padding: 0 1rem;
   height: 100%;
   position: relative;
 }
@@ -26,34 +27,16 @@
   font-weight: 600;
   color: var(--text-primary);
   margin: 0;
+  transition: color 0.2s ease-in-out;
 }
 
 .header-actions {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   display: flex;
   align-items: center;
-  gap: var(--spacing-4);
+  gap: 1rem;
 }
 
-.theme-toggle-button {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-2);
-  padding: var(--spacing-2) var(--spacing-3);
-  border-radius: var(--border-radius);
-  background-color: var(--background-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
-  cursor: pointer;
-  transition: all 0.2s ease-in-out;
-}
-
+/* Estilos específicos para tema escuro */
 [data-theme="dark"] .header {
   background-color: var(--background-secondary);
-}
-
-[data-theme="dark"] .theme-toggle-button {
-  background-color: var(--background-primary);
 }

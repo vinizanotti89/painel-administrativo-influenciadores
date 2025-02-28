@@ -1,14 +1,12 @@
 @import '@/styles/themes.css';
 
-.header {
-  background-color: var(--background-primary);
-}
-
 .main-content {
   flex: 1;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 1.5rem;
+  background-color: var(--background-secondary);
+  transition: background-color 0.2s ease-in-out;
 }
 
 .content-container {

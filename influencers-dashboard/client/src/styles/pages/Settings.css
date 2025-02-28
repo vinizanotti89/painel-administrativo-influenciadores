@@ -1,75 +1,386 @@
+@import '@/styles/themes.css';
+
 .settings-container {
-  margin: 1.5rem;
+  padding: 1.5rem;
   background-color: var(--background-primary);
   color: var(--text-primary);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .settings-title {
-  font-size: 1.5rem;
+  font-size: 1.875rem;
   font-weight: bold;
   color: var(--text-primary);
   margin-bottom: 1.5rem;
 }
 
+/* Alertas */
+.alert-success {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-text);
+  margin-bottom: 1rem;
+}
+
+.alert-error {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-text);
+  margin-bottom: 1rem;
+}
+
+/* Tabs */
+.settings-tabs {
+  margin-top: 1rem;
+}
+
+.settings-tabs-list {
+  background-color: var(--background-secondary);
+  border-radius: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.settings-tabs-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cards */
 .settings-card {
   background-color: var(--card-background);
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   margin-bottom: 1.5rem;
   border: 1px solid var(--border-color);
+  transition: all 0.2s ease-in-out;
 }
 
-.settings-card-header {
+.settings-card:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Plataformas */
+.platforms-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.platform-card {
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  transition: all 0.2s ease-in-out;
+}
+
+.platform-card:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+.platform-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 1rem;
   border-bottom: 1px solid var(--border-color);
 }
 
-.settings-card-content {
-  padding: 1rem;
+.platform-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.platform-title h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
   color: var(--text-primary);
 }
 
-.theme-toggle {
+.platform-icon {
+  width: 24px;
+  height: 24px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.instagram-icon {
+  background-image: url('/assets/icons/instagram.svg');
+}
+
+.youtube-icon {
+  background-image: url('/assets/icons/youtube.svg');
+}
+
+.linkedin-icon {
+  background-image: url('/assets/icons/linkedin.svg');
+}
+
+.platform-content {
+  padding: 1.5rem;
+}
+
+/* Detalhes da conta */
+.account-details {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.account-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.account-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.account-name {
+  font-weight: 600;
   color: var(--text-primary);
 }
 
-.notification-settings {
+.account-stats {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.connect-account {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.export-options {
+.connect-account p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.loading-indicator {
+  color: var(--text-secondary);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+
+.connect-btn {
+  width: 100%;
+}
+
+.instagram-btn {
+  background-color: var(--instagram-color);
+  color: white;
+}
+
+.instagram-btn:hover {
+  background-color: var(--instagram-dark);
+}
+
+.youtube-btn {
+  background-color: var(--youtube-color);
+  color: white;
+}
+
+.youtube-btn:hover {
+  background-color: var(--youtube-dark);
+}
+
+.linkedin-btn {
+  background-color: var(--linkedin-color);
+  color: white;
+}
+
+.linkedin-btn:hover {
+  background-color: var(--linkedin-dark);
+}
+
+.disconnect-btn {
+  background-color: var(--error-text);
+  color: white;
+}
+
+.disconnect-btn:hover {
+  background-color: #b91c1c;
+}
+
+/* Theme toggle */
+.theme-toggle {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+
+/* Notification settings */
+.notification-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.notification-option {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.notification-label {
+  color: var(--text-primary);
+}
+
+.notification-email {
+  margin: 0.5rem 0 1rem;
+}
+
+.report-frequency-select,
+.language-select {
+  background-color: var(--input-background);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  width: 150px;
+}
+
+.save-preferences-btn {
+  width: 100%;
+  margin-top: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.save-preferences-btn:hover {
+  opacity: 0.9;
+}
+
+/* Export options */
+.export-description {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.export-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.export-option {
+  padding: 1.5rem;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
   gap: 1rem;
 }
 
-/* Adicionando estilos específicos para inputs e botões nas configurações */
-.settings-container input {
-  background-color: var(--input-background);
-  border-color: var(--border-color);
+.export-option h4 {
+  font-size: 1.125rem;
+  margin: 0;
   color: var(--text-primary);
 }
 
-.settings-container .export-button {
-  background-color: var(--button-secondary-background);
-  border-color: var(--border-color);
-  color: var(--text-primary);
+.export-option p {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
 }
 
-/* Estilos adicionais para elementos específicos no tema escuro */
-[data-theme='dark'] .settings-card {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+.export-btn {
+  background-color: var(--primary-color);
+  color: white;
 }
 
-[data-theme='dark'] .reports-table tr {
-  border-color: var(--border-color);
+.export-btn:hover {
+  opacity: 0.9;
 }
 
-[data-theme='dark'] .analytics-grid .card {
-  background-color: var(--card-background);
-  border-color: var(--border-color);
+/* Responsividade */
+@media (max-width: 768px) {
+
+  .platforms-grid,
+  .export-options {
+    grid-template-columns: 1fr;
+  }
+
+  .account-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .disconnect-btn {
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .notification-option {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .report-frequency-select,
+  .language-select {
+    width: 100%;
+  }
+}
+
+/* Para telas muito pequenas */
+@media (max-width: 480px) {
+  .settings-tabs-list {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .platform-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+}
+
+/* Badges para status de conexão */
+.badge-success {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-text);
+}
+
+.badge-outline {
+  background-color: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+}
+
+/* Transições suaves */
+.settings-container *,
+.platform-card,
+.export-option,
+.settings-card,
+.connect-btn,
+.disconnect-btn,
+.save-preferences-btn,
+.export-btn,
+.report-frequency-select,
+.language-select {
+  transition: background-color 0.2s ease-in-out,
+    color 0.2s ease-in-out,
+    border-color 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out,
+    opacity 0.2s ease-in-out;
 }

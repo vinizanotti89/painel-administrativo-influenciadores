@@ -1,21 +1,48 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import {
+  LayoutDashboard,
+  Users,
+  AlertTriangle,
+  BarChart,
+  FileText,
+  Settings,
+  Search,
+  Award
+} from 'lucide-react';
+import { useTranslation } from '@/lib/useTranslation';
+import translations from '@/lib/translations';
 import '@/styles/layout/Sidebar.css';
 
-const Sidebar = () => {
-  const menuItems = [
-    { name: 'Dashboard', path: '/' },
-    { name: 'Influenciadores', path: '/influencers' },
-    { name: 'Alegações', path: '/claims' },
-    { name: 'Analytics', path: '/analytics' },
-    { name: 'Relatórios', path: '/reports' },
-    { name: 'Configurações', path: '/settings' },
-    { name: 'Pesquisa', path: '/research'},
-    { name: 'Trust Leaderboard', path: '/leaderboard'},
-  ];
+const Sidebar = React.forwardRef(({ className = '', ...props }, ref) => {
+  const { language } = useTranslation();
+
+  // Pegue os itens do menu do arquivo de traduções com base no idioma atual
+  const menuItems = translations.menuItems[language].map((item, index) => {
+    // Adicione ícones e notificações
+    const icons = [
+      <LayoutDashboard size={18} />,
+      <Users size={18} />,
+      <AlertTriangle size={18} />,
+      <BarChart size={18} />,
+      <FileText size={18} />,
+      <Settings size={18} />,
+      <Search size={18} />,
+      <Award size={18} />
+    ];
+
+    // Adicione notificações apenas para Influencers e Reports/Relatórios
+    const notifications = index === 1 ? 3 : (index === 4 ? 2 : null);
+
+    return {
+      ...item,
+      icon: icons[index],
+      notifications
+    };
+  });
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${className}`} ref={ref} {...props}>
       <nav className="sidebar-nav">
         <div className="menu-items">
           {menuItems.map((item) => (
@@ -26,13 +53,19 @@ const Sidebar = () => {
                 `menu-item ${isActive ? 'active' : ''}`
               }
             >
-              {item.name}
+              <span className="menu-item-icon">{item.icon}</span>
+              <span className="menu-item-text">{item.name}</span>
+              {item.notifications && (
+                <span className="notification-badge">{item.notifications}</span>
+              )}
             </NavLink>
           ))}
         </div>
       </nav>
     </aside>
   );
-};
+});
 
-export default Sidebar;
+Sidebar.displayName = 'Sidebar';
+
+export { Sidebar };

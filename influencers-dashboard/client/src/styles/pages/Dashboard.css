@@ -3,9 +3,11 @@
 .dashboard-container {
   padding: var(--spacing-6);
   background-color: var(--background-primary);
+  min-height: 100vh;
+  color: var(--text-primary);
 }
 
-/* Stats Grid */
+/* Stats Grid - Com responsividade melhorada */
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -13,12 +15,31 @@
   margin-bottom: var(--spacing-6);
 }
 
+@media (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Estilos do StatsCard */
 .stat-card {
   background-color: var(--card-background);
   border: 1px solid var(--border-color);
   border-radius: var(--border-radius);
   padding: var(--spacing-4);
   box-shadow: var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--card-shadow-hover, 0 8px 16px rgba(0, 0, 0, 0.1));
 }
 
 .stat-content {
@@ -42,6 +63,7 @@
 .stat-title {
   font-size: 0.875rem;
   color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .stat-value {
@@ -56,13 +78,77 @@
   color: var(--text-muted);
 }
 
+.stat-icon {
+  color: var(--primary-color);
+}
+
 .trend-badge {
   padding: 0.25rem 0.5rem;
   border-radius: 9999px;
   font-size: 0.75rem;
   font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.trend-badge.positive {
   background-color: var(--success-bg);
   color: var(--success-text);
+}
+
+.trend-badge.negative {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+}
+
+.trend-badge.neutral {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+/* Recent Influencers Section */
+.recent-influencers {
+  background-color: var(--card-background);
+  border-radius: var(--border-radius);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.section-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.view-all-link {
+  font-size: 0.875rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+/* Container para a tabela com rolagem horizontal */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  background-color: var(--card-background);
 }
 
 /* Recent Influencers Table */
@@ -70,12 +156,13 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  background-color: var(--card-background);
-  border-radius: var(--border-radius);
-  overflow: hidden;
+  min-width: 800px;
+  /* Garante uma largura mínima para evitar compressão excessiva */
 }
 
 .influencers-table th {
+  position: sticky;
+  top: 0;
   padding: var(--spacing-3) var(--spacing-4);
   text-align: left;
   font-weight: 500;
@@ -88,10 +175,88 @@
   padding: var(--spacing-3) var(--spacing-4);
   color: var(--text-primary);
   border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.influencers-table td.cell-wrap {
+  white-space: normal;
+  /* Permite quebra de linha para células específicas */
 }
 
 .influencers-table tr:last-child td {
   border-bottom: none;
+}
+
+.influencers-table tr:hover {
+  background-color: var(--hover-background);
+}
+
+/* Influencer Info */
+.influencer-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.influencer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--background-secondary);
+}
+
+.influencer-name {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.influencer-platform {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Badges para categorias */
+.categories-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-1);
+}
+
+.category-badge {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 9999px;
+  background-color: var(--badge-background);
+  color: var(--text-secondary);
+}
+
+/* Trust Score Badges */
+.trust-score {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.trust-score.high {
+  background-color: var(--trust-score-high-bg);
+  color: var(--trust-score-high-text);
+}
+
+.trust-score.medium {
+  background-color: var(--trust-score-medium-bg);
+  color: var(--trust-score-medium-text);
+}
+
+.trust-score.low {
+  background-color: var(--trust-score-low-bg);
+  color: var(--trust-score-low-text);
 }
 
 /* Status Badges */
@@ -109,80 +274,14 @@
   color: var(--success-text);
 }
 
-/* Trust Score Badges */
-.trust-score {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.875rem;
-  font-weight: 500;
+.status-badge.inactive {
+  background-color: var(--error-bg);
+  color: var(--error-text);
 }
 
-.trust-score.high {
-  background-color: var(--success-bg);
-  color: var(--success-text);
-}
-
-.trust-score.medium {
+.status-badge.pending {
   background-color: var(--warning-bg);
   color: var(--warning-text);
-}
-
-.trust-score.low {
-  background-color: var(--error-bg);
-  color: var(--error-text);
-}
-
-/* Search Bar */
-.search-bar {
-  margin-bottom: var(--spacing-6);
-  width: 100%;
-  position: relative;
-}
-
-.search-input {
-  width: 100%;
-  padding: var(--spacing-3);
-  border-radius: var(--border-radius);
-  border: 1px solid var(--border-color);
-  background-color: var(--card-background);
-  color: var(--text-primary);
-}
-
-.search-input::placeholder {
-  color: var(--text-muted);
-}
-
-/* Loading State */
-.loading-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 200px;
-}
-
-.loading-spinner {
-  border: 3px solid var(--border-color);
-  border-top: 3px solid var(--primary-color);
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  animation: spin 1s linear infinite;
-}
-
-/* Error State */
-.error-container {
-  padding: var(--spacing-4);
-  background-color: var(--error-bg);
-  border-radius: var(--border-radius);
-  color: var(--error-text);
-  margin: var(--spacing-4) 0;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
 }
 
 /* Actions Column */
@@ -204,4 +303,141 @@
 
 .action-button:hover {
   background-color: var(--background-secondary);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.action-button.view {
+  color: var(--primary-color);
+  border-color: var(--primary-color-transparent, rgba(59, 130, 246, 0.5));
+}
+
+.action-button.analyze {
+  color: var(--warning-text);
+  border-color: var(--warning-bg);
+}
+
+.action-button.report {
+  color: var(--info-text, #0ea5e9);
+  border-color: var(--info-bg, rgba(14, 165, 233, 0.2));
+}
+
+/* Loading State melhorado */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  gap: var(--spacing-4);
+  width: 100%;
+}
+
+.loading-spinner {
+  border: 3px solid var(--border-color);
+  border-top: 3px solid var(--primary-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Error State melhorado */
+.error-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--spacing-6);
+  background-color: var(--error-bg);
+  border-radius: var(--border-radius);
+  color: var(--error-text);
+  margin: var(--spacing-6) 0;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.error-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: var(--spacing-2);
+}
+
+.error-message {
+  margin-bottom: var(--spacing-4);
+}
+
+.retry-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: var(--primary-color-dark, #2563eb);
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Estilos para os dados dos influenciadores */
+.followers-count {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.platform-icon {
+  display: inline-flex;
+  margin-right: var(--spacing-1);
+  color: inherit;
+}
+
+.instagram-color {
+  color: var(--instagram-color);
+}
+
+.youtube-color {
+  color: var(--youtube-color);
+}
+
+.linkedin-color {
+  color: var(--linkedin-color);
+}
+
+/* Estilizações adicionais para transições suaves */
+.dashboard-container *,
+.stat-card,
+.influencers-table tr,
+.action-button,
+.category-badge,
+.trust-score,
+.status-badge {
+  transition: background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }

@@ -1,13 +1,28 @@
 import React from "react";
 import '@/styles/components/ui/Badge.css';
 
-function Badge({ className, variant = 'default', ...props }) {
+/**
+ * Componente Badge para exibir etiquetas ou status em toda a aplicação
+ * 
+ * @param {Object} props Propriedades do componente
+ * @param {string} props.className Classes adicionais para o componente
+ * @param {string} props.variant Variante visual do badge ('default', 'secondary', 'destructive', 'outline')
+ */
+const Badge = React.forwardRef(({
+  className = '',
+  variant = 'default',
+  ...props
+}, ref) => {
   return (
-    <div 
-      className={`badge badge-${variant} ${className || ''}`} 
-      {...props} 
+    <div
+      ref={ref}
+      className={`badge badge-${variant} ${className}`}
+      {...props}
     />
   );
-}
+});
 
-export { Badge }
+// Definir displayName conforme os padrões do projeto
+Badge.displayName = 'Badge';
+
+export { Badge };

@@ -1,11 +1,15 @@
+@import '@/styles/themes.css';
+
 .analytics-container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 1.5rem;
   background-color: var(--background-primary);
   color: var(--text-primary);
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
 }
 
+/* Cabeçalho de análise */
 .analytics-header {
   display: flex;
   justify-content: space-between;
@@ -19,6 +23,15 @@
   color: var(--text-primary);
 }
 
+.analytics-time-select {
+  min-width: 150px;
+  background-color: var(--input-background);
+  color: var(--text-primary);
+  border-color: var(--border-color);
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+/* Grade de análise */
 .analytics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -26,33 +39,129 @@
   margin-bottom: 1.5rem;
 }
 
-.chart-container {
-  height: 24rem;
-  width: 100%;
+/* Cards de estatísticas */
+.analytics-stat-card {
   background-color: var(--card-background);
   border: 1px solid var(--border-color);
   border-radius: 0.5rem;
+  padding: 1.25rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
 }
 
-[data-theme='dark'] .analytics-container {
-  background-color: #1a1a1a;
-  color: #ffffff;
+.analytics-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-[data-theme='dark'] .analytics-card {
-  background-color: #2d3748;
-  border-color: #4a5568;
+.analytics-stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-[data-theme='dark'] .stat-value {
-  color: #60a5fa;
+.analytics-stat-title {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
 }
 
-[data-theme='dark'] .stat-label {
-  color: #a0aec0;
+.analytics-stat-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-color);
 }
 
-[data-theme='dark'] .chart-container {
-  background-color: #2d3748;
-  border-color: #4a5568;
+/* Contêineres de gráfico */
+.analytics-chart-container {
+  height: 24rem;
+  background-color: var(--card-background);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem;
+  padding: 0.75rem;
+  transition: border-color 0.2s ease, background-color 0.2s ease-in-out;
+}
+
+.analytics-grid:nth-child(3) {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.analytics-trend-chart,
+.analytics-category-chart {
+  height: 24rem;
+}
+
+.analytics-trend-chart h2,
+.analytics-category-chart h2 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  padding: 0.25rem 0.5rem;
+}
+
+/* Estados de carregamento e erro */
+.analytics-loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.analytics-error-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  padding: 1rem;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border-radius: 0.5rem;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+/* Personalização de gráficos */
+.analytics-container .recharts-default-tooltip {
+  background-color: var(--card-background) !important;
+  border-color: var(--border-color) !important;
+  color: var(--text-primary) !important;
+}
+
+.analytics-container .recharts-tooltip-label {
+  color: var(--text-secondary) !important;
+}
+
+.analytics-container .recharts-cartesian-axis-tick-value {
+  fill: var(--text-secondary);
+}
+
+.analytics-container .recharts-legend-item-text {
+  color: var(--text-primary) !important;
+}
+
+/* Responsividade */
+@media (max-width: 1024px) {
+  .analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .analytics-grid,
+  .analytics-grid:nth-child(3) {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-chart-container {
+    height: 20rem;
+  }
 }
